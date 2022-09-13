@@ -1,12 +1,25 @@
 from imports import *
 
+
 def dixon_price(x: Vector) -> float:
     """
         The function is usually evaluated on the hypercube xi ∈ [-10, 10], for all i = 1,..., d \n
          Global Minimum: f(x*) = 0 at x_i = 2^(-(2^i - 2)/2^i) for i = 1,...,d
     """
     d = len(x)
-    return (x[0] - 1) ** 2 + sum(((i+1) * 2 * x[i] ** 2 - x[i-1]) ** 2 for i in range(1, d))
+    return (x[0] - 1) ** 2 + sum(((i + 1) * 2 * x[i] ** 2 - x[i - 1]) ** 2 for i in range(1, d))
+
+
+def michalewicz(x: Vector, m=10) -> float:
+    """
+        The function is usually evaluated on the hypercube xi ∈ [0, π], for all i = 1, ..., d \n
+        Global Minima: \n
+        at len(x) = 2: f(x*) = -1.8013 at x* = (2.20, 1.57) \n
+        at len(x) = 5: f(x*) = -4.687658 \n
+        at len(x) = 2: f(x*) = -9.66015 \n
+    """
+    d = len(x)
+    return -sum(sin(x[i] * sin((i+1) * x[i] ** 2 / pi) ** 2 * m) for i in range(d))
 
 
 def rosenbrock(x: Vector) -> float:
