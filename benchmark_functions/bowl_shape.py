@@ -17,3 +17,11 @@ def rotated_hyper_ellipsoid(x: Vector) -> float:
     """
     d = len(x)
     return sum(sum(x[j] ** 2 for j in range(i)) for i in range(d))
+
+
+def sphere(x: Vector) -> float:
+    """
+        The function is usually evaluated on the hypercube xi ∈ [-5.12, 5.12], for all i = 1, ..., d \n
+        Global Minimum: f(x*) = 0 at x* = (0,...,0)
+    """
+    return sum(x_i ** 2 for x_i in x)
