@@ -34,3 +34,13 @@ def sum_of_powers(x: Vector) -> float:
     """
     d = len(x)
     return sum(abs(x[i]) ** (i+2) for i in range(d))
+
+
+def sum_of_squares(x: Vector) -> float:
+    """
+        The function is usually evaluated on the hypercube xi ∈ [-10, 10], for all i = 1, ..., d, \n
+        although this may be restricted to the hypercube xi ∈ [-5.12, 5.12], for all i = 1, ..., d \n
+        Global Minimum: f(x*) = 0 at x* = (0,...,0)
+    """
+    d = len(x)
+    return sum((i+1) * x[i] ** 2 for i in range(d))
