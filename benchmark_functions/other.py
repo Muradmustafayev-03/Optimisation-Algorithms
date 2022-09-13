@@ -9,3 +9,10 @@ def rosenbrock(x: Vector) -> float:
     """
     d = len(x)
     return sum(100 * (x[i + 1] - x[i] ** 2) ** 2 + (x[i] - 1) ** 2 for i in range(d - 1))
+
+
+def zakharov(x: Vector) -> float:
+    d = len(x)
+    return sum(x[i] ** 2 for i in range(d)) + \
+           sum(0.5 * (i+1) * x[i] for i in range(d)) ** 2 + \
+           sum(0.5 * (i+1) * x[i] for i in range(d)) ** 4
