@@ -25,3 +25,12 @@ def sphere(x: Vector) -> float:
         Global Minimum: f(x*) = 0 at x* = (0,...,0)
     """
     return sum(x_i ** 2 for x_i in x)
+
+
+def sum_of_powers(x: Vector) -> float:
+    """
+        The function is usually evaluated on the hypercube xi ∈ [-1, 1], for all i = 1, ..., d \n
+        Global Minimum: f(x*) = 0 at x* = (0,...,0)
+    """
+    d = len(x)
+    return sum(abs(x[i]) ** (i+2) for i in range(d))
