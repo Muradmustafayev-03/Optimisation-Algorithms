@@ -1,5 +1,5 @@
 from benchmark_functions import *
-from HarmonySearchAlgorithm import harmony_search
+from metaheuristic_algorithms.HarmonySearch import harmony_search
 
 
 def mean(arr):
