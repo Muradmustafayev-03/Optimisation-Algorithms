@@ -8,7 +8,7 @@ def ackley(x: Vector, a=20, b=0.2, c=2*pi) -> float:
         Global Minimum: f(x*) = 0 at x* = (0,...,0)
     """
     d = len(x)
-    return -1 * a * exp(-1 * b * sqrt((1 / d) * sum(square(x)))) - exp(
+    return -1 * a * exp(-1 * b * sqrt((1 / d) * np.sum(square(x)))) - exp(
         (1 / d) * np.sum(cos(x * np.full(shape=d, fill_value=c)))) + a + exp(1)
 
 
@@ -18,7 +18,7 @@ def griewank(x: Vector) -> float:
         Global Minimum: f(x*) = 0 at x* = (0,...,0)
     """
     d = len(x)
-    return sum(x[i] ** 2 / 4000 for i in range(d)) - prod(cos(x[i] / sqrt(i)) for i in range(d)) + 1
+    return sum(x[i] ** 2 / 4000 for i in range(d)) - prod(cos(x[i] / sqrt(i+1)) for i in range(d)) + 1
 
 
 def levy(x: Vector) -> float:
