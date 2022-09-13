@@ -1,4 +1,4 @@
-from numpy import exp, square, sqrt, sin, cos, pi
+from numpy import exp, square, sqrt, sin, cos, pi, prod
 import numpy as np
 
 Vector = list[float]
@@ -34,4 +34,4 @@ def schwefel(x: Vector) -> int:
 
 
 def shubert(x: Vector) -> int:
-    return sum(i * cos(i + 1) * x[0] for i in range(1, 6)) * sum(i * cos(i + 1) * x[1] for i in range(1, 6))
+    return prod(sum(i * cos(i + 1) * x_j for i in range(1, 6)) for x_j in x)
