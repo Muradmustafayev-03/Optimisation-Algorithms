@@ -6,7 +6,7 @@ v0 = [[0 for _ in range(1, d+1)] for d in range(1, 11)]
 v1 = [[1 for _ in range(1, d+1)] for d in range(1, 11)]
 
 v_schwefel_min = [[420.9687 for _ in range(1, d+1)] for d in range(1, 11)]
-v_styblinski_tang_min = [[2.903534 for _ in range(1, d+1)] for d in range(1, 11)]
+v_styblinski_tang_min = [[-2.903534 for _ in range(1, d+1)] for d in range(1, 11)]
 v_michalewicz_min = [2.20, 1.57]
 
 v_dixon_min = [[2 ** (-1 * ((2 ** i - 2) / 2 ** i)) for i in range(1, d+1)] for d in range(1, 11)]
@@ -103,6 +103,17 @@ def test_rastrigin():
         return False
 
 
+def test_rosenbrock():
+    try:
+        for vector in v1:
+            assert rosenbrock(vector) == 0
+        print('Rosenbrock function works correctly at points (1,...,1)')
+        return True
+    except AssertionError:
+        print('Rosenbrock function does not work correctly at points (1,...,1)')
+        return False
+
+
 def test_rotated_hyper_ellipsoid():
     try:
         for vector in v0:
@@ -133,6 +144,17 @@ def test_sphere():
         return True
     except AssertionError:
         print('Sphere function does not work correctly at points (0,...,0)')
+        return False
+
+
+def test_styblinski_tang():
+    try:
+        for vector in v_styblinski_tang_min:
+            assert round(styblinski_tang(vector), 1) == round(-39.16599 * len(vector), 1)
+        print('Styblinski Tang function works correctly at points (2.903534,...,2.903534)')
+        return True
+    except AssertionError:
+        print('Styblinski Tang function does not work correctly at points (2.903534,...,2.903534)')
         return False
 
 
@@ -167,4 +189,15 @@ def test_trid():
         return True
     except AssertionError:
         print('Trid function does not work correctly at points x_i = i(d+1-i), for all i in 1,2,...,d')
+        return False
+
+
+def test_zakharov():
+    try:
+        for vector in v0:
+            assert zakharov(vector) == 0
+        print('Zakharov function works correctly at points (0,...,0)')
+        return True
+    except AssertionError:
+        print('Zakharov function does not work correctly at points (0,...,0)')
         return False

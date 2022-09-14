@@ -46,7 +46,7 @@ def styblinski_tang(x: Vector) -> float:
         The function is usually evaluated on the hypercube xi ∈ [-5, 5], for all i = 1, ..., d \n
         Global Minimum: f(x*) =  -39.16599d at x* = (2.903534,...,2.903534)
     """
-    return 1 / 2 * sum(x_i ** 4 - 16 * x_i ** 2 + 5 * x_i for x_i in x)
+    return sum(x_i ** 4 - 16 * x_i ** 2 + 5 * x_i for x_i in x) / 2
 
 
 def zakharov(x: Vector) -> float:
