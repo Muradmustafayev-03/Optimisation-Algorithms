@@ -49,7 +49,7 @@ def sum_of_squares(x: Vector) -> float:
 def trid(x: Vector) -> float:
     """
         The function is usually evaluated on the hypercube xi ∈ [-d2, d2], for all i = 1, ..., d \n
-        Global Minimum: f(x*) = -d(d+4)(d-1)/6, at x_i = (d+1-i), for all i in 1,2,...,d
+        Global Minimum: f(x*) = -d(d+4)(d-1)/6, at x_i = i(d+1-i), for all i in 1,2,...,d
     """
     d = len(x)
     return sum((x[i] - 1) ** 2 for i in range(d)) - sum(x[i] * x[i - 1] for i in range(1, d))

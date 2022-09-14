@@ -12,7 +12,7 @@ v_michalewicz_min = [2.20, 1.57]
 v_dixon_min = [[2 ** (-1 * ((2 ** i - 2) / 2 ** i)) for i in range(1, d+1)] for d in range(1, 11)]
 v_perm_min = [[i for i in range(1, d+1)] for d in range(1, 11)]
 v_perm0_min = [[1/i for i in range(1, d+1)] for d in range(1, 11)]
-v_trid_min = [[d+1-i for i in range(1, d+1)] for d in range(1, 11)]
+v_trid_min = [[i * (d + 1 - i) for i in range(1, d+1)] for d in range(1, 11)]
 
 
 def test_ackley():
@@ -122,4 +122,17 @@ def test_sum_of_squares():
         return True
     except AssertionError:
         print('Sum of Squares function does not function work correctly at points (0,...,0)')
+        return False
+
+
+def test_trid():
+    try:
+        for vector in v_trid_min:
+            d = len(vector)
+            print(trid(vector), -d * (d+4) * (d-1) / 6)
+            assert trid(vector) == -d * (d+4) * (d-1) / 6
+        print('Trid function works correctly at points (0,...,0)')
+        return True
+    except AssertionError:
+        print('Trid function does not function work correctly at points (0,...,0)')
         return False
