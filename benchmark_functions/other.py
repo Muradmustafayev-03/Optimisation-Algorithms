@@ -22,6 +22,15 @@ def michalewicz(x: Vector, m=10) -> float:
     return -sum(sin(x[i] * sin((i+1) * x[i] ** 2 / pi) ** 2 * m) for i in range(d))
 
 
+def perm(x: Vector, beta=10) -> float:
+    """
+        The function is usually evaluated on the hypercube xi ∈ [-d, d], for all i = 1, ..., d \n
+        Global Minimum: f(x*) = 0 at x* = (1,2,...,d)
+    """
+    d = len(x)
+    return sum(sum(((j ** (i+1) + beta) * ((x[i] / (j+1)) ** (i+1) - 1)) ** 2 for j in range(d)) for i in range(d))
+
+
 def rosenbrock(x: Vector) -> float:
     """
         The function is usually evaluated on the hypercube xi ∈ [-5, 10], for all i = 1,..., d, \n,
