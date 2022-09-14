@@ -201,3 +201,23 @@ def test_zakharov():
     except AssertionError:
         print('Zakharov function does not work correctly at points (0,...,0)')
         return False
+
+
+if __name__ == '__main__':
+    test_ackley()
+    test_dixon()
+    test_griewank()
+    test_levy()
+    test_michalewicz()
+    test_perm()
+    test_perm0()
+    test_rastrigin()
+    test_rosenbrock()
+    test_rotated_hyper_ellipsoid()
+    test_schwefel()
+    test_sphere()
+    test_styblinski_tang()
+    test_sum_of_powers()
+    test_sum_of_squares()
+    test_trid()
+    test_zakharov()
