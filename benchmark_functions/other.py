@@ -1,4 +1,4 @@
-from ..imports import *
+from imports import *
 
 
 def dixon_price(x: Vector) -> float:

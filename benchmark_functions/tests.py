@@ -1,9 +1,6 @@
-from .bowl_shape import *
-from .many_local_minimums import *
-from .other import *
+from bowl_shape import *
+from many_local_minimums import *
+from other import *
 
-vectors = [
-    [0], [1], [420.9687], [2.903534],
-    [0, 0], [1, 1], [1, 1/2], [2, 1], [1, -1], [1, 2],
-    [420.9687, 420.9687], [2.20, 1.57], [2.903534, 2.903534],
-]
+v0 = [[0 for _ in range(n+1)] for n in range(10)]
+v1 = [[1 for _ in range(n+1)] for n in range(10)]
