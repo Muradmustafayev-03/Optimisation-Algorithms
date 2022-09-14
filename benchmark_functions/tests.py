@@ -22,7 +22,7 @@ def test_ackley():
         print('Ackley function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Ackley does not function work correctly at points (0,...,0)')
+        print('Ackley function does not function work correctly at points (0,...,0)')
         return False
 
 
@@ -33,7 +33,7 @@ def test_griewank():
         print('Griewank function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Griewank does not function work correctly at points (0,...,0)')
+        print('Griewank function does not function work correctly at points (0,...,0)')
         return False
 
 
@@ -44,7 +44,18 @@ def test_levy():
         print('Levy function works correctly at points (1,...,1)')
         return True
     except AssertionError:
-        print('Levy does not function work correctly at points (1,...,1)')
+        print('Levy function does not function work correctly at points (1,...,1)')
+        return False
+
+
+def test_perm0():
+    try:
+        for vector in v_perm0_min:
+            assert round(perm0(vector), 31) == 0
+        print('Perm (0, d, b) function works correctly at points (0,...,0)')
+        return True
+    except AssertionError:
+        print('Perm (0, d, b) function does not function work correctly at points (0,...,0)')
         return False
 
 
@@ -55,7 +66,18 @@ def test_rastrigin():
         print('Rastrigin function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Rastrigin does not function work correctly at points (0,...,0)')
+        print('Rastrigin function does not function work correctly at points (0,...,0)')
+        return False
+
+
+def test_rotated_hyper_ellipsoid():
+    try:
+        for vector in v0:
+            assert rotated_hyper_ellipsoid(vector) == 0
+        print('Rotated Hyper Ellipsoid function works correctly at points (0,...,0)')
+        return True
+    except AssertionError:
+        print('Rotated Hyper Ellipsoid function does not function work correctly at points (0,...,0)')
         return False
 
 
@@ -67,4 +89,37 @@ def test_schwefel():
         return True
     except AssertionError:
         print('Schwefel function does not work correctly at points (420.9687,...,420.9687)')
+        return False
+
+
+def test_sphere():
+    try:
+        for vector in v0:
+            assert sphere(vector) == 0
+        print('Sphere function works correctly at points (0,...,0)')
+        return True
+    except AssertionError:
+        print('Sphere function does not function work correctly at points (0,...,0)')
+        return False
+
+
+def test_sum_of_powers():
+    try:
+        for vector in v0:
+            assert sum_of_powers(vector) == 0
+        print('Sum of Powers function works correctly at points (0,...,0)')
+        return True
+    except AssertionError:
+        print('Sum of Powers function does not function work correctly at points (0,...,0)')
+        return False
+
+
+def test_sum_of_squares():
+    try:
+        for vector in v0:
+            assert sum_of_squares(vector) == 0
+        print('Sum of Squares function works correctly at points (0,...,0)')
+        return True
+    except AssertionError:
+        print('Sum of Squares function does not function work correctly at points (0,...,0)')
         return False
