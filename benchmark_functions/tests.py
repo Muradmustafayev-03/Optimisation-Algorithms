@@ -60,6 +60,16 @@ def test_levy():
         return False
 
 
+def test_michalewicz():
+    try:
+        assert round(michalewicz(v_michalewicz_min), 1) == -1.8
+        print('Michalewicz function works correctly at points (0,...,0)')
+        return True
+    except AssertionError:
+        print('Michalewicz function does not function work correctly at points (0,...,0)')
+        return False
+
+
 def test_perm0():
     try:
         for vector in v_perm0_min:

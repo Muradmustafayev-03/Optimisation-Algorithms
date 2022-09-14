@@ -19,7 +19,7 @@ def michalewicz(x: Vector, m=10) -> float:
         at len(x) = 2: f(x*) = -9.66015 \n
     """
     d = len(x)
-    return -sum(sin(x[i] * sin((i + 1) * x[i] ** 2 / pi) ** 2 * m) for i in range(d))
+    return -sum(sin(x[i] * (sin((i + 1) * x[i] ** 2 / pi)) ** (2 * m)) for i in range(d))
 
 
 def perm(x: Vector, beta=10) -> float:
