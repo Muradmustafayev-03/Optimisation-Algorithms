@@ -26,6 +26,18 @@ def test_ackley():
         return False
 
 
+def test_dixon():
+    try:
+        for vector in v_dixon_min:
+            assert round(dixon_price(vector), 30) == 0
+        print('Dixon Price function works correctly at points x_i = 2^(-(2^i - 2)/2^i) for i = 1,...,d')
+        return True
+    except AssertionError:
+        print('Dixon Price function does not function work correctly at points '
+              'x_i = 2^(-(2^i - 2)/2^i) for i = 1,...,d')
+        return False
+
+
 def test_griewank():
     try:
         for vector in v0:
@@ -52,10 +64,10 @@ def test_perm0():
     try:
         for vector in v_perm0_min:
             assert round(perm0(vector), 31) == 0
-        print('Perm (0, d, b) function works correctly at points (0,...,0)')
+        print('Perm (0, d, b) function works correctly at points (1, 1/2,...,1/d)')
         return True
     except AssertionError:
-        print('Perm (0, d, b) function does not function work correctly at points (0,...,0)')
+        print('Perm (0, d, b) function does not function work correctly at points (1, 1/2,...,1/d)')
         return False
 
 
@@ -129,10 +141,9 @@ def test_trid():
     try:
         for vector in v_trid_min:
             d = len(vector)
-            print(trid(vector), -d * (d+4) * (d-1) / 6)
             assert trid(vector) == -d * (d+4) * (d-1) / 6
-        print('Trid function works correctly at points (0,...,0)')
+        print('Trid function works correctly at points x_i = i(d+1-i), for all i in 1,2,...,d')
         return True
     except AssertionError:
-        print('Trid function does not function work correctly at points (0,...,0)')
+        print('Trid function does not function work correctly at points x_i = i(d+1-i), for all i in 1,2,...,d')
         return False

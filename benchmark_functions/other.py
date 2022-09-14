@@ -7,7 +7,7 @@ def dixon_price(x: Vector) -> float:
          Global Minimum: f(x*) = 0 at x_i = 2^(-(2^i - 2)/2^i) for i = 1,...,d
     """
     d = len(x)
-    return (x[0] - 1) ** 2 + sum(((i + 1) * 2 * x[i] ** 2 - x[i - 1]) ** 2 for i in range(1, d))
+    return (x[0] - 1) ** 2 + sum((i + 1) * (2 * x[i] ** 2 - x[i - 1]) ** 2 for i in range(1, d))
 
 
 def michalewicz(x: Vector, m=10) -> float:
