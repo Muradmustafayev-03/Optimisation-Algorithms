@@ -1,4 +1,4 @@
-from imports import *
+from ..imports import *
 
 
 def dixon_price(x: Vector) -> float:
@@ -19,7 +19,7 @@ def michalewicz(x: Vector, m=10) -> float:
         at len(x) = 2: f(x*) = -9.66015 \n
     """
     d = len(x)
-    return -sum(sin(x[i] * sin((i+1) * x[i] ** 2 / pi) ** 2 * m) for i in range(d))
+    return -sum(sin(x[i] * sin((i + 1) * x[i] ** 2 / pi) ** 2 * m) for i in range(d))
 
 
 def perm(x: Vector, beta=10) -> float:
@@ -28,7 +28,8 @@ def perm(x: Vector, beta=10) -> float:
         Global Minimum: f(x*) = 0 at x* = (1,2,...,d)
     """
     d = len(x)
-    return sum(sum(((j ** (i+1) + beta) * ((x[i] / (j+1)) ** (i+1) - 1)) ** 2 for j in range(d)) for i in range(d))
+    return sum(
+        sum(((j ** (i + 1) + beta) * ((x[i] / (j + 1)) ** (i + 1) - 1)) ** 2 for j in range(d)) for i in range(d))
 
 
 def rosenbrock(x: Vector) -> float:
@@ -46,7 +47,7 @@ def styblinski_tang(x: Vector) -> float:
         The function is usually evaluated on the hypercube xi ∈ [-5, 5], for all i = 1, ..., d \n
         Global Minimum: f(x*) =  -39.16599d at x* = (2.903534,...,2.903534)
     """
-    return 1/2 * sum(x_i ** 4 - 16 * x_i ** 2 + 5 * x_i for x_i in x)
+    return 1 / 2 * sum(x_i ** 4 - 16 * x_i ** 2 + 5 * x_i for x_i in x)
 
 
 def zakharov(x: Vector) -> float:
