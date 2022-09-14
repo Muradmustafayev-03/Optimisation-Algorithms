@@ -41,6 +41,14 @@ def rosenbrock(x: Vector) -> float:
     return sum(100 * (x[i + 1] - x[i] ** 2) ** 2 + (x[i] - 1) ** 2 for i in range(d - 1))
 
 
+def styblinski_tang(x: Vector) -> float:
+    """
+        The function is usually evaluated on the hypercube xi ∈ [-5, 5], for all i = 1, ..., d \n
+        Global Minimum: f(x*) =  -39.16599d at x* = (2.903534,...,2.903534)
+    """
+    return 1/2 * sum(x_i ** 4 - 16 * x_i ** 2 + 5 * x_i for x_i in x)
+
+
 def zakharov(x: Vector) -> float:
     """
         The function is usually evaluated on the hypercube xi ∈ [-5, 10], for all i = 1,..., d \n
