@@ -22,7 +22,7 @@ def test_ackley():
         print('Ackley function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Ackley function does not function work correctly at points (0,...,0)')
+        print('Ackley function does not work correctly at points (0,...,0)')
         return False
 
 
@@ -33,7 +33,7 @@ def test_dixon():
         print('Dixon Price function works correctly at points x_i = 2^(-(2^i - 2)/2^i) for i = 1,...,d')
         return True
     except AssertionError:
-        print('Dixon Price function does not function work correctly at points '
+        print('Dixon Price function does not work correctly at points '
               'x_i = 2^(-(2^i - 2)/2^i) for i = 1,...,d')
         return False
 
@@ -45,7 +45,7 @@ def test_griewank():
         print('Griewank function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Griewank function does not function work correctly at points (0,...,0)')
+        print('Griewank function does not work correctly at points (0,...,0)')
         return False
 
 
@@ -56,7 +56,7 @@ def test_levy():
         print('Levy function works correctly at points (1,...,1)')
         return True
     except AssertionError:
-        print('Levy function does not function work correctly at points (1,...,1)')
+        print('Levy function does not work correctly at points (1,...,1)')
         return False
 
 
@@ -66,7 +66,18 @@ def test_michalewicz():
         print('Michalewicz function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Michalewicz function does not function work correctly at points (0,...,0)')
+        print('Michalewicz does not function work correctly at points (0,...,0)')
+        return False
+
+
+def test_perm():
+    try:
+        for vector in v_perm_min:
+            assert round(perm(vector), 31) == 0
+        print('Perm (d, b) function works correctly at points (1,2,...,d)')
+        return True
+    except AssertionError:
+        print('Perm (d, b) function does not work correctly at points (1,2,...,d)')
         return False
 
 
@@ -77,7 +88,7 @@ def test_perm0():
         print('Perm (0, d, b) function works correctly at points (1, 1/2,...,1/d)')
         return True
     except AssertionError:
-        print('Perm (0, d, b) function does not function work correctly at points (1, 1/2,...,1/d)')
+        print('Perm (0, d, b) function does not work correctly at points (1, 1/2,...,1/d)')
         return False
 
 
@@ -88,7 +99,7 @@ def test_rastrigin():
         print('Rastrigin function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Rastrigin function does not function work correctly at points (0,...,0)')
+        print('Rastrigin function does not work correctly at points (0,...,0)')
         return False
 
 
@@ -99,7 +110,7 @@ def test_rotated_hyper_ellipsoid():
         print('Rotated Hyper Ellipsoid function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Rotated Hyper Ellipsoid function does not function work correctly at points (0,...,0)')
+        print('Rotated Hyper Ellipsoid function does not work correctly at points (0,...,0)')
         return False
 
 
@@ -121,7 +132,7 @@ def test_sphere():
         print('Sphere function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Sphere function does not function work correctly at points (0,...,0)')
+        print('Sphere function does not work correctly at points (0,...,0)')
         return False
 
 
@@ -132,7 +143,7 @@ def test_sum_of_powers():
         print('Sum of Powers function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Sum of Powers function does not function work correctly at points (0,...,0)')
+        print('Sum of Powers function does not work correctly at points (0,...,0)')
         return False
 
 
@@ -143,7 +154,7 @@ def test_sum_of_squares():
         print('Sum of Squares function works correctly at points (0,...,0)')
         return True
     except AssertionError:
-        print('Sum of Squares function does not function work correctly at points (0,...,0)')
+        print('Sum of Squares function does not work correctly at points (0,...,0)')
         return False
 
 
@@ -155,5 +166,5 @@ def test_trid():
         print('Trid function works correctly at points x_i = i(d+1-i), for all i in 1,2,...,d')
         return True
     except AssertionError:
-        print('Trid function does not function work correctly at points x_i = i(d+1-i), for all i in 1,2,...,d')
+        print('Trid function does not work correctly at points x_i = i(d+1-i), for all i in 1,2,...,d')
         return False

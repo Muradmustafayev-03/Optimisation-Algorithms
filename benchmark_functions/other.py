@@ -28,8 +28,7 @@ def perm(x: Vector, beta=10) -> float:
         Global Minimum: f(x*) = 0 at x* = (1,2,...,d)
     """
     d = len(x)
-    return sum(
-        sum(((j ** (i + 1) + beta) * ((x[i] / (j + 1)) ** (i + 1) - 1)) ** 2 for j in range(d)) for i in range(d))
+    return sum(sum(((j+1) ** (i+1) + beta) * ((x[j] / (j+1)) ** (i+1) - 1) for j in range(d)) ** 2 for i in range(d))
 
 
 def rosenbrock(x: Vector) -> float:
