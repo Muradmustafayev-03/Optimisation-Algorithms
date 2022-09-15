@@ -1,4 +1,4 @@
-from imports import *
+from .imports import *
 
 
 def perm_gradient(x: Vector, beta=10) -> float:

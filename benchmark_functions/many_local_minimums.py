@@ -1,4 +1,4 @@
-from imports import *
+from .imports import *
 
 
 def ackley(x: Vector, a=20, b=0.2, c=2*pi) -> float:
