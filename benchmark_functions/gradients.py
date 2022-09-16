@@ -1,34 +1,28 @@
+import numpy as np
 from .imports import *
 
 
-def perm_gradient(x: Vector, beta=10) -> Vector:
-    pass
-
-
-def perm0_gradient(x: Vector, beta=10) -> Vector:
+# seem not to work correctly
+def rosenbrock_gradient(x: Vector):
     d = len(x)
+    return np.array([400 * (x[i+1] - x[i] ** 2) * x[i] for i in range(d-1)] + [400 * (- x[-1]) ** 2 * x[-1]])
 
 
-
-def rosenbrock_gradient(x: Vector) -> Vector:
+def rotated_hyper_ellipsoid_gradient(x: Vector):
     pass
 
 
-def rotated_hyper_ellipsoid_gradient(x: Vector) -> Vector:
+def sphere_gradient(x: Vector):
     pass
 
 
-def sphere_gradient(x: Vector) -> Vector:
+def sum_of_powers_gradient(x: Vector):
     pass
 
 
-def sum_of_powers_gradient(x: Vector) -> Vector:
+def sum_of_squares_gradient(x: Vector):
     pass
 
 
-def sum_of_squares_gradient(x: Vector) -> Vector:
-    pass
-
-
-def trid(x: Vector) -> Vector:
+def trid(x: Vector):
     pass
