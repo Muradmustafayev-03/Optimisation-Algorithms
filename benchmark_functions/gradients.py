@@ -17,7 +17,7 @@ def sphere_gradient(x: Vector):
 
 def sum_of_powers_gradient(x: Vector):
     d = len(x)
-    return np.array([(i+2) * abs(x[i]) ** (i+1) for i in range(d)])
+    return np.array([(i+2) * abs(x[i]) ** (i+1) if x[i] >= 0 else -(i+2) * abs(x[i]) ** (i+1) for i in range(d)])
 
 
 def sum_of_squares_gradient(x: Vector):
