@@ -21,8 +21,11 @@ def sum_of_powers_gradient(x: Vector):
 
 
 def sum_of_squares_gradient(x: Vector):
-    pass
+    d = len(x)
+    return np.array([2 * (i+1) * x[i] for i in range(d)])
 
 
-def trid(x: Vector):
-    pass
+def trid_gradient(x: Vector):
+    d = len(x)
+    return np.array([2 * (x[i] - 1) for i in range(d)]) - \
+           np.array([x[1]] + [x[i-1] + x[i+1] for i in range(1, d-1)] + [x[d-1]])

@@ -5,6 +5,7 @@ def gradient_descent(gradient, d, alpha=0.2, tc_value=10 ** (-20), max_iteration
     current = (np.random.rand(d) - 0.5) * _range
 
     for _ in range(max_iterations):
+        print(current)
         step = alpha * gradient(current)
 
         if step.all() < tc_value:
