@@ -1,4 +1,3 @@
-import numpy as np
 from .imports import *
 
 
@@ -17,7 +16,8 @@ def sphere_gradient(x: Vector):
 
 
 def sum_of_powers_gradient(x: Vector):
-    pass
+    d = len(x)
+    return np.array([(i+2) * abs(x[i]) ** (i+1) for i in range(d)])
 
 
 def sum_of_squares_gradient(x: Vector):
