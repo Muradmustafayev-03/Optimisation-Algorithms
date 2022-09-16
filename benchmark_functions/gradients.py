@@ -13,7 +13,7 @@ def rotated_hyper_ellipsoid_gradient(x: Vector):
 
 
 def sphere_gradient(x: Vector):
-    pass
+    return np.array([2 * x_i for x_i in x])
 
 
 def sum_of_powers_gradient(x: Vector):
