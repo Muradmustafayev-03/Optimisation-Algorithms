@@ -49,13 +49,3 @@ def schwefel(x: Vector) -> float:
     """
     d = len(x)
     return 418.9829 * d - sum(x[i] * sin(sqrt(abs(x[i]))) for i in range(d))
-
-
-def shubert(x: Vector) -> float:
-    """
-        The function is usually evaluated on the square xi ∈ [-10, 10], for all i = 1, 2, \n
-        although this may be restricted to the square xi ∈ [-5.12, 5.12], for all i = 1, 2 \n
-        Recommended passing x of length 2 (2-dimensional function) \n
-        Global Minimum when len(x) = 2: f(x*) = -186.7309
-    """
-    return float(prod(sum(i * cos(i + 1) * x_j for i in range(1, 6)) for x_j in x))

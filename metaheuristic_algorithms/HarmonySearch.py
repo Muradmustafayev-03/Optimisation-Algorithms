@@ -3,7 +3,7 @@ import numpy as np
 from copy import deepcopy
 
 
-def harmony_search(func=lambda x: sum(x), d=30, hms=30, tc_value=10 ** (-16), max_iterations=150, _range=500,
+def harmony_search(func: callable, d=30, hms=30, tc_value=10 ** (-16), max_iterations=10000, _range=1000,
                    hmcr=0.8, par=0.4, bw=2):
 
     hm = (np.random.rand(hms, d) - 0.5) * _range
