@@ -16,7 +16,7 @@ def rotated_hyper_ellipsoid(x: Vector) -> float:
         Global Minimum: f(x*) = 0 at x* = (0,...,0)
     """
     d = len(x)
-    return sum(sum(x[j] ** 2 for j in range(i)) for i in range(d))
+    return sum((d-i) * (x[i] ** 2) for i in range(d))
 
 
 def sphere(x: Vector) -> float:
