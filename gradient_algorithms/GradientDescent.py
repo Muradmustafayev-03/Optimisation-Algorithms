@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def gradient_descent(gradient, d, alpha=0.2, tc_value=10 ** (-20), max_iterations=1000000, _range=1000):
+def batch_gradient_descent(gradient, d, alpha=0.2, tc_value=10 ** (-20), max_iterations=1000000, _range=1000):
     try:
         current = (np.random.rand(d) - 0.5) * _range
 
@@ -15,4 +15,4 @@ def gradient_descent(gradient, d, alpha=0.2, tc_value=10 ** (-20), max_iteration
         return current
 
     except RuntimeWarning:
-        return gradient_descent(gradient, d, alpha, tc_value, max_iterations, _range)
+        return batch_gradient_descent(gradient, d, alpha, tc_value, max_iterations, _range)
