@@ -2,7 +2,6 @@ from iterative_algorithms.GradientDescent import batch_gradient_descent, approxi
 from metaheuristic_algorithms.HarmonySearch import harmony_search
 from benchmark_functions.many_local_minimums import *
 from benchmark_functions.bowl_shape import *
-from benchmark_functions.other import *
 from benchmark_functions.gradients import *
 
 
@@ -23,13 +22,17 @@ def test_approximated_gradient_descent():
 
 
 def test_hs():
-    print(harmony_search(ackley))
-    print(harmony_search(griewank))
-    print(harmony_search(levy))
-    print(harmony_search(rastrigin))
-    print(harmony_search(schwefel))
+    # print(harmony_search(ackley, 10))
+    # print(harmony_search(griewank, 10))
+    # print(harmony_search(levy, 10))
+    # print(harmony_search(rastrigin, 10))
+    # print(harmony_search(schwefel, 10))
+    print(harmony_search(rotated_hyper_ellipsoid, 10, _range=130))
+    print(harmony_search(sphere, 10))
+    print(harmony_search(sum_of_powers, 10, _range=2))
+    print(harmony_search(sum_of_squares, 10, _range=20))
 
 
 # test_batch_gradient_descent()
 # test_approximated_gradient_descent()
-# test_hs()
+test_hs()

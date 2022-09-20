@@ -3,8 +3,7 @@ import numpy as np
 from copy import deepcopy
 
 
-def harmony_search(func: callable, d=30, hms=30, tc_value=10 ** (-16), max_iterations=10000, _range=1000,
-                   hmcr=0.8, par=0.4, bw=2):
+def harmony_search(func: callable, d=30, hms=30, max_iterations=10000, _range=1000, hmcr=0.8, par=0.4, bw=2):
 
     hm = (np.random.rand(hms, d) - 0.5) * _range
     results = np.apply_along_axis(func, 1, hm)
@@ -12,10 +11,6 @@ def harmony_search(func: callable, d=30, hms=30, tc_value=10 ** (-16), max_itera
     for _ in range(max_iterations):
         results = np.apply_along_axis(func, 1, hm)
         worst_i = np.argmax(results)
-        best_i = np.argmin(results)
-
-        if float(results[best_i]) < tc_value:
-            break
 
         new_harmony = deepcopy(hm)
 
