@@ -1,4 +1,4 @@
-from iterative_algorithms.GradientDescent import batch_gradient_descent, approximated_gradient_descent, grad
+from iterative_algorithms.GradientDescent import batch_gradient_descent, approximated_gradient_descent
 from metaheuristic_algorithms.HarmonySearch import harmony_search
 from benchmark_functions.many_local_minimums import *
 from benchmark_functions.bowl_shape import *
