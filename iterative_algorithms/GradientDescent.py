@@ -1,3 +1,4 @@
+import random
 import numpy as np
 
 
@@ -10,12 +11,13 @@ def grad(func, x, tc_value=10 ** (-8)):
     return np.array([(func(replace(x, x_i, x_i + tc_value)) - func(x)) / tc_value for x_i in x])
 
 
-def batch_gradient_descent(gradient: callable, d, alpha=0.2, tc_value=10 ** (-20), max_iterations=1000000, _range=1000):
+def batch_gradient_descent(gradient: callable, d: int, alpha: float = 0.2, tc_value: float = 10 ** (-20),
+                           randomize: bool = False, max_iterations: int = 1000000, _range=1000):
     try:
         current = (np.random.rand(d) - 0.5) * _range
 
         for _ in range(max_iterations):
-            step = alpha * gradient(current)
+            step = alpha * gradient(current) * (random.random() ** int(randomize))
 
             if step.all() < tc_value:
                 break
@@ -24,15 +26,15 @@ def batch_gradient_descent(gradient: callable, d, alpha=0.2, tc_value=10 ** (-20
         return current
 
     except RuntimeWarning:
-        return batch_gradient_descent(gradient, d, alpha, tc_value, max_iterations, _range)
+        return batch_gradient_descent(gradient, d, alpha, tc_value, randomize, max_iterations, _range)
 
 
-def approximated_gradient_descent(func: callable, d, alpha=0.2, tc_value=10 ** (-20), max_iterations=1000000,
-                                  _range=1000):
+def approximated_gradient_descent(func: callable, d, alpha=0.2, tc_value=10 ** (-20), grad_tc=10 ** (-8),
+                                  randomize: bool = False, max_iterations=1000000, _range=1000):
     current = (np.random.rand(d) - 0.5) * _range
 
     for _ in range(max_iterations):
-        step = alpha * grad(func, current)
+        step = alpha * grad(func, current, grad_tc) * (random.random() ** int(randomize))
 
         if step.all() < tc_value:
             break

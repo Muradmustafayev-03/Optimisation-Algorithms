@@ -1,8 +1,9 @@
-from iterative_algorithms.GradientDescent import batch_gradient_descent, approximated_gradient_descent
+from iterative_algorithms.GradientDescent import batch_gradient_descent, approximated_gradient_descent, grad
 from metaheuristic_algorithms.HarmonySearch import harmony_search
-from benchmark_functions.gradients import *
 from benchmark_functions.many_local_minimums import *
 from benchmark_functions.bowl_shape import *
+from benchmark_functions.other import *
+from benchmark_functions.gradients import *
 
 
 def test_batch_gradient_descent():
@@ -29,6 +30,6 @@ def test_hs():
     print(harmony_search(schwefel))
 
 
-test_batch_gradient_descent()
-test_approximated_gradient_descent()
-test_hs()
+# test_batch_gradient_descent()
+# test_approximated_gradient_descent()
+# test_hs()
