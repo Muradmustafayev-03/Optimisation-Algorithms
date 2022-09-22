@@ -1,5 +1,6 @@
 from iterative_algorithms.GradientDescent import batch_gradient_descent, approximated_gradient_descent
 from metaheuristic_algorithms.HarmonySearch import harmony_search
+from metaheuristic_algorithms.GeneticAlgorithm import GeneticAlgorithm
 from benchmark_functions.many_local_minimums import *
 from benchmark_functions.bowl_shape import *
 from benchmark_functions.gradients import *
@@ -33,6 +34,8 @@ def test_hs():
     print(harmony_search(sum_of_squares, 10, _range=20))
 
 
-test_batch_gradient_descent()
-test_approximated_gradient_descent()
-test_hs()
+# test_batch_gradient_descent()
+# test_approximated_gradient_descent()
+# test_hs()
+c = GeneticAlgorithm(rotated_hyper_ellipsoid, 20)
+print(c.evolve(100, 1, 10, 40))
