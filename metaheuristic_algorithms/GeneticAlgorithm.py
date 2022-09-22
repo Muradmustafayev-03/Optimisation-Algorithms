@@ -12,9 +12,14 @@ class GeneticAlgorithm:
     def eval(self, population: np.array):
         return np.apply_along_axis(self.func, 1, population)
 
-    def select_elite(self, population: np.array,  elite_number: int):
+    def select_best(self, population: np.array, n: int):
         fitness = self.eval(population)
-        indices = np.argpartition(fitness, -elite_number)[-elite_number:]
+        indices = np.argpartition(fitness, -n)[-n:]
+        return population[indices]
+
+    def select_worst(self, population: np.array, n: int):
+        fitness = self.eval(population)
+        indices = np.argpartition(fitness, n)[:n]
         return population[indices]
 
     def make_pairs(self, elite: np.array):
@@ -22,7 +27,7 @@ class GeneticAlgorithm:
 
     @staticmethod
     def crossover(pairs: np.array, points: set):
-        pivots = [int(p * len(pairs[0][0])) for p in points]
+        pivots = [int(point * len(pairs[0][0])) for point in points]
         if 0 not in pivots:
             pivots.append(0)
         if len(pairs[0][0]) not in pivots:
@@ -52,16 +57,28 @@ class GeneticAlgorithm:
 
         return np.array(population)
 
-    def mutate(self):
-        pass
+    def replace_worst(self, population, n: int, crossover_points: set):
+        elite = self.select_best(population, n)
+        pairs = self.make_pairs(elite)
+        new_generation = self.crossover(pairs, crossover_points)
+        new_elite = self.select_best(new_generation, n)
+        worst = self.select_worst(population, n)
+
+        for i in range(n):
+            population[population == worst[i]] = new_elite[i]
+
+        return population
+
+    def mutate(self, population):
+        np.random.shuffle(population)
 
     def evolve(self):
         pass
 
 
-# pp = np.array([[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4], [5, 5, 5, 5], [6, 6, 6, 6]])
-# f = np.array([1, 2, 3, 4, 5, 6])
-#
-# e = GeneticAlgorithm.select_elite(pp, f, 4)
-# ps = GeneticAlgorithm.make_pairs(e, lambda x: x[0])
-# print(GeneticAlgorithm.crossover(ps, {0.25, 0.5, 0.75}))
+c = GeneticAlgorithm(lambda x: sum(x), 10)
+p = c.generate_population(12)
+print(c.eval(p))
+newp = c.replace_worst(p, 4, {0.25, 0.5, 0.75})
+print(c.eval(newp))
+
