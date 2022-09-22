@@ -12,7 +12,7 @@ def grad(func, x, delta=10 ** (-20)):
 
 
 def batch_gradient_descent(gradient: callable, d: int, alpha: float = 0.2, tol: float = 10 ** (-20),
-                           randomize: bool = False, max_iterations: int = 1000000, _range=1000):
+                           randomize: bool = False, max_iterations: int = 1000000, _range: int = 1000):
     try:
         current = (np.random.rand(d) - 0.5) * _range
 
@@ -29,8 +29,9 @@ def batch_gradient_descent(gradient: callable, d: int, alpha: float = 0.2, tol: 
         return batch_gradient_descent(gradient, d, alpha, tol, randomize, max_iterations, _range)
 
 
-def approximated_gradient_descent(func: callable, d, alpha=0.2, tol=10 ** (-20), grad_delta=10 ** (-8),
-                                  randomize: bool = False, max_iterations=1000000, _range=1000):
+def approximated_gradient_descent(func: callable, d: int, alpha: float = 0.2, tol: float = 10 ** (-20),
+                                  grad_delta: float = 10 ** (-8), randomize: bool = False,
+                                  max_iterations: int = 1000000, _range: int = 1000):
     current = (np.random.rand(d) - 0.5) * _range
 
     for _ in range(max_iterations):
