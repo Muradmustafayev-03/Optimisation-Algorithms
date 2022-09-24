@@ -7,89 +7,79 @@ class GeneticAlgorithm:
         self.func = func
         self.d = d
 
-    def generate_population(self, size: int, _range=1):
+    def generate_population(self, size: int, _range: float = 1):
         return (np.random.rand(size, self.d) - 0.5) * _range
 
     def eval(self, population: np.array):
         return np.apply_along_axis(self.func, 1, population)
 
     def select_best(self, population: np.array, n: int):
-        fitness = self.eval(population)
-        indices = np.argpartition(fitness, n)[:n]
+        fitness = list(self.eval(population))
+        indices = sorted(range(len(fitness)), key=lambda sub: fitness[sub])[:n]
         return population[indices]
-
-    def select_worst(self, population: np.array, n: int):
-        fitness = self.eval(population)
-        indices = np.argpartition(fitness, -n)[-n:]
-        return population[indices]
-
-    def make_pairs(self, elite: np.array):
-        return [[x1, x2] for x1 in elite for x2 in elite if self.func(x1) < self.func(x2)]
 
     @staticmethod
-    def crossover(pairs: np.array, points: set):
-        pivots = [int(point * len(pairs[0][0])) for point in points]
+    def make_pairs(elite: np.array):
+        return [[elite[i], elite[j]] for i in range(len(elite)) for j in range(len(elite)) if i < j]
+
+    def crossover(self, pairs: np.array, points: set = (0, 0.5, 1)):
+        pivots = [int(point * self.d) for point in points]
         if 0 not in pivots:
             pivots.append(0)
-        if len(pairs[0][0]) not in pivots:
-            pivots.append(len(pairs[0][0]))
+        if self.d not in pivots:
+            pivots.append(self.d)
         pivots.sort()
 
         population = []
 
         for pair in pairs:
-            individual1 = []
-            individual2 = []
+            child_1 = []
+            child_2 = []
 
-            for even in range(len(pivots))[:-1:2]:
-                odd = even + 1
+            for pivot in pivots[:-1]:
+                index = pivots.index(pivot)
+                next_pivot = pivots[index + 1]
 
-                individual1 += list(pair[0][pivots[even]:pivots[odd]])
-                individual2 += list(pair[1][pivots[even]:pivots[odd]])
-                try:
-                    individual1 += list(pair[1][pivots[odd]:pivots[odd + 1]])
-                    individual2 += list(pair[0][pivots[odd]:pivots[odd + 1]])
-                except IndexError:
-                    individual1 += list(pair[1][pivots[odd]:])
-                    individual2 += list(pair[0][pivots[odd]:])
+                if index % 2 == 0:
+                    child_1 += list(pair[0][pivot:next_pivot])
+                    child_2 += list(pair[1][pivot:next_pivot])
+                else:
+                    child_1 += list(pair[1][pivot:next_pivot])
+                    child_2 += list(pair[0][pivot:next_pivot])
 
-            population.append(individual1)
-            population.append(individual2)
+            population.append(np.array(child_1))
+            population.append(np.array(child_2))
 
         return np.array(population)
 
-    def replace_worst(self, population, n_select: int, n_replace: int, crossover_points: set):
-        elite = self.select_best(population, n_select)
+    def breed(self, population, n_breed: int, n_remain: int, crossover_points: set = (0, 0.5, 1)):
+        elite = self.select_best(population, n_breed)
         pairs = self.make_pairs(elite)
         new_generation = self.crossover(pairs, crossover_points)
-        new_elite = self.select_best(new_generation, n_replace)
-        worst = self.select_worst(population, n_replace)
 
-        for i in range(n_replace):
-            population[population == worst[i]] = new_elite[i]
+        new_population = list(self.select_best(population, n_remain)) + \
+                         list(self.select_best(new_generation, len(population) - n_remain))
 
-        return population
+        return np.array(new_population)
 
-    @staticmethod
-    def mutate(population, individuals_rate=0.5, genes_rate=0.1, _range: float = 1.):
-        for individual in population:
+    def mutate(self, population, individuals_rate=0.5, genes_rate=0.1, _range: float = 1.):
+        for individual in range(len(population)):
             if individuals_rate > random.random():
-                for gene in individual:
+                for gene in range(self.d):
                     if genes_rate > random.random():
-                        individual[individual == gene] += _range * random.random()
+                        population[individual][gene] += (random.random() - 0.5) * _range
         return population
 
-    def evolve(self, population_size, population_range, n_elite: int, n_replace: int,
+    def evolve(self, population_size: int = 1000, population_range: float = 10, n_breed: int = 200, n_remain: int = 200,
                crossover_points: set = (0, 0.5, 1), individuals_mutation_rate: float = 0.5,
-               genes_mutation_rate: float = 0.1, mutation_range: float = 1., max_iterations: int = 100000):
+               genes_mutation_rate: float = 0.1, mutation_range: float = 1., max_iterations: int = 10000):
 
         population = self.generate_population(population_size, population_range)
 
         best_i = np.argmin(self.eval(population))
-        to_terminate = 1000
+        to_terminate = 100
         for _ in range(max_iterations):
-            print(self.eval(population)[best_i])
-            population = self.replace_worst(population, n_elite, n_replace, crossover_points)
+            population = self.breed(population, n_breed, n_remain, crossover_points)
             population = self.mutate(population, individuals_mutation_rate, genes_mutation_rate, mutation_range)
 
             if np.argmin(population) < np.argmin(self.eval(population)):

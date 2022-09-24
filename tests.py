@@ -34,8 +34,16 @@ def test_hs():
     print(harmony_search(sum_of_squares, 10, _range=20))
 
 
-# test_batch_gradient_descent()
-# test_approximated_gradient_descent()
-# test_hs()
-c = GeneticAlgorithm(rotated_hyper_ellipsoid, 20)
-print(c.evolve(100, 1, 10, 40))
+def test_ga():
+    print(GeneticAlgorithm(ackley, 10).evolve())
+    print(GeneticAlgorithm(griewank, 10).evolve())
+    print(GeneticAlgorithm(levy, 10).evolve())
+    print(GeneticAlgorithm(rastrigin, 10).evolve())
+    print(GeneticAlgorithm(schwefel, 10).evolve())
+    print(GeneticAlgorithm(rotated_hyper_ellipsoid, 10).evolve())
+    print(GeneticAlgorithm(sphere, 10).evolve())
+    print(GeneticAlgorithm(sum_of_powers, 10).evolve())
+    print(GeneticAlgorithm(sum_of_squares, 10).evolve())
+
+
+test_ga()
