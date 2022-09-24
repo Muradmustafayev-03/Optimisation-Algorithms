@@ -46,4 +46,7 @@ def test_ga():
     print(GeneticAlgorithm(sum_of_squares, 10).evolve())
 
 
+test_batch_gradient_descent()
+test_approximated_gradient_descent()
 test_hs()
+test_ga()
