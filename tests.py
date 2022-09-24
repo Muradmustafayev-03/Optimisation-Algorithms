@@ -1,5 +1,5 @@
 from iterative_algorithms.GradientDescent import batch_gradient_descent, approximated_gradient_descent
-from metaheuristic_algorithms.HarmonySearch import harmony_search
+from metaheuristic_algorithms.HarmonySearch import HarmonySearch
 from metaheuristic_algorithms.GeneticAlgorithm import GeneticAlgorithm
 from benchmark_functions.many_local_minimums import *
 from benchmark_functions.bowl_shape import *
@@ -23,15 +23,15 @@ def test_approximated_gradient_descent():
 
 
 def test_hs():
-    print(harmony_search(ackley, 10))
-    print(harmony_search(griewank, 10))
-    print(harmony_search(levy, 10))
-    print(harmony_search(rastrigin, 10))
-    print(harmony_search(schwefel, 10))
-    print(harmony_search(rotated_hyper_ellipsoid, 10, _range=130))
-    print(harmony_search(sphere, 10))
-    print(harmony_search(sum_of_powers, 10, _range=2))
-    print(harmony_search(sum_of_squares, 10, _range=20))
+    print(HarmonySearch(ackley, 10).find_harmony())
+    print(HarmonySearch(griewank, 10).find_harmony())
+    print(HarmonySearch(levy, 10).find_harmony())
+    print(HarmonySearch(rastrigin, 10).find_harmony())
+    print(HarmonySearch(schwefel, 10).find_harmony())
+    print(HarmonySearch(rotated_hyper_ellipsoid, 10, _range=130).find_harmony())
+    print(HarmonySearch(sphere, 10).find_harmony())
+    print(HarmonySearch(sum_of_powers, 10, _range=2).find_harmony())
+    print(HarmonySearch(sum_of_squares, 10, _range=20).find_harmony())
 
 
 def test_ga():
@@ -46,4 +46,4 @@ def test_ga():
     print(GeneticAlgorithm(sum_of_squares, 10).evolve())
 
 
-test_ga()
+test_hs()

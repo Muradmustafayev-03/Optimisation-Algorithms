@@ -3,9 +3,10 @@ import numpy as np
 
 
 class GeneticAlgorithm:
-    def __init__(self, func: callable, d: int):
+    def __init__(self, func: callable, d: int, _range: float = 1):
         self.func = func
         self.d = d
+        self.range = _range
 
     def generate_population(self, size: int, _range: float = 1):
         return (np.random.rand(size, self.d) - 0.5) * _range
@@ -70,11 +71,11 @@ class GeneticAlgorithm:
                         population[individual][gene] += (random.random() - 0.5) * _range
         return population
 
-    def evolve(self, population_size: int = 1000, population_range: float = 10, n_breed: int = 200, n_remain: int = 200,
+    def evolve(self, population_size: int = 1000, n_breed: int = 200, n_remain: int = 200,
                crossover_points: set = (0, 0.5, 1), individuals_mutation_rate: float = 0.5,
                genes_mutation_rate: float = 0.1, mutation_range: float = 1., max_iterations: int = 10000):
 
-        population = self.generate_population(population_size, population_range)
+        population = self.generate_population(population_size, self.range)
 
         best_i = np.argmin(self.eval(population))
         to_terminate = 100
