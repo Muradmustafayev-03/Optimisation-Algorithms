@@ -4,7 +4,7 @@ from copy import deepcopy
 
 
 class HarmonySearch:
-    def __init__(self, func: callable, d: int, _range: float = 1):
+    def __init__(self, func: callable, d: int, _range: float = 1000):
         self.func = func
         self.d = d
         self.range = _range
