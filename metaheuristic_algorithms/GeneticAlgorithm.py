@@ -46,7 +46,7 @@ class GeneticAlgorithm:
         genes_mutation_rate: float = 0.1, mutation_range: float = 1.,
         max_iterations: int = 10000, _terminate: int = 1000):
             Finds the global minima of the function by simulating an evolving population.
-            :return:
+        :return:
         """
 
     def __init__(self, func: callable, d: int, _range: float = 1000):
@@ -59,6 +59,8 @@ class GeneticAlgorithm:
             Number of dimensions of the function [f(x) = f(x_1, ..., x_d)]
         _range: float
             Range of values for the initial population x_1 in (-range/2; range/2)
+
+        :return: None
         """
         self.func = func
         self.d = d
