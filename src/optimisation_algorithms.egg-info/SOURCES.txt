@@ -1,0 +1,8 @@
+LICENSE
+README.md
+setup.py
+src/optimisation_algorithms.egg-info/PKG-INFO
+src/optimisation_algorithms.egg-info/SOURCES.txt
+src/optimisation_algorithms.egg-info/dependency_links.txt
+src/optimisation_algorithms.egg-info/requires.txt
+src/optimisation_algorithms.egg-info/top_level.txt

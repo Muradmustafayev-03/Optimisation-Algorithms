@@ -71,7 +71,7 @@ setup(
     author="Murad Mustafayev",  # Optional
     # This should be a valid email address corresponding to the author listed
     # above.
-    author_email="murad.mustafayev.ufaz.az",  # Optional
+    author_email="murad.mustafayev@ufaz.az",  # Optional
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
