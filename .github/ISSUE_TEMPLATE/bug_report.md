@@ -17,14 +17,14 @@ Steps to reproduce the behavior:
 3. Display '....'
 4. See error
 
-**Expected behavior**
+**Expected behavior:**
 A clear and concise description of what you expected to happen.
 
-**Results**
+**Results:**
 If applicable, copy the output or add screenshots to help explain your problem.
 
-**Tracebacks**
+**Tracebacks:**
 Copy and paste the Traceback if you faced an error or an exception
 
-**Additional context**
+**Additional context:**
 Add any other context about the problem here.
