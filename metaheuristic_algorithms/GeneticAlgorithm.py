@@ -132,22 +132,7 @@ class GeneticAlgorithm:
         """
         return [[elite[i], elite[j]] for i in range(len(elite)) for j in range(len(elite)) if i < j]
 
-    def crossover(self, pairs: np.array, points: set = (0, 0.5, 1)):
-        """
-        Does a crossover at the given points between parents to get 2 children from each pair.
-
-        Parameters
-        ----------
-        pairs: numpy.array
-            Array of pairs of the shape (m, 2, d)
-        points: set
-            The set of relative points in range(0, 1), by default splits by half
-
-        Returns
-        -------
-        :return: numpy.array
-            New generation
-        """
+    def __pivots(self, points: set):
         pivots = [int(point * self.d) for point in points]
         if 0 not in pivots:
             pivots.append(0)
@@ -155,6 +140,10 @@ class GeneticAlgorithm:
             pivots.append(self.d)
         pivots.sort()
 
+        return pivots
+
+    @staticmethod
+    def __crossover(pairs: np.array, pivots: list):
         population = []
 
         for pair in pairs:
@@ -176,6 +165,44 @@ class GeneticAlgorithm:
             population.append(np.array(child_2))
 
         return np.array(population)
+
+    def crossover(self, pairs: np.array, points: set = (0, 0.5, 1)):
+        """
+        Does a crossover at the given points between parents to get 2 children from each pair.
+
+        Parameters
+        ----------
+        pairs: numpy.array
+            Array of pairs of the shape (m, 2, d)
+        points: set
+            The set of relative points in range(0, 1), by default splits by half
+
+        Returns
+        -------
+        :return: numpy.array
+            New generation
+        """
+
+        pivots = self.__pivots(points)
+        return self.__crossover(pairs, pivots)
+
+    def uniform_crossover(self, pairs: np.array):
+        """
+        Does a crossover at the given points between parents to get 2 children from each pair.
+
+        Parameters
+        ----------
+        pairs: numpy.array
+            Array of pairs of the shape (m, 2, d)
+
+        Returns
+        -------
+        :return: numpy.array
+            New generation
+        """
+
+        pivots = list(range(self.d))
+        return self.__crossover(pairs, pivots)
 
     def breed(self, population: np.array, n_breed: int, n_remain: int, crossover_points: set = (0, 0.5, 1)):
         """
