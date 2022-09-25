@@ -4,6 +4,7 @@ A collection of the most commonly used Optimisation Algorithms for Data Science 
 In this project I try to collect as many useful Optimisation Algorithms as possible, and write them in a simple and reusable way.
 The idea is write all these algorithms in python, in a fundamental, yet easy-to-use way, with *numpy* being the only external library used.
 The project is currently on the early stages of the development, but one can already try and implement it in their own projects.
+And for sure, you are always welcome to contribute or to make any suggestions. Any feedback is appreciated.
 
 ## What is an Optimisation Algorithm?
 *For more information: https://en.wikipedia.org/wiki/Mathematical_optimization*
