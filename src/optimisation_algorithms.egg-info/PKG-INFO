@@ -4,15 +4,15 @@ Version: 1.0.0
 Summary: A collection of the most commonly used Optimisation Algorithms for Data Science & Machine Learning
 Home-page: https://github.com/Muradmustafayev-03/Optimisation-Algorithms
 Author: Murad Mustafayev
-Author-email: murad.mustafayev.ufaz.az
+Author-email: murad.mustafayev@ufaz.az
 Project-URL: Bug Reports, https://github.com/Muradmustafayev-03/Optimisation-Algorithms/issues
 Project-URL: Funding, https://donate.pypi.org
 Project-URL: Source, https://github.com/Muradmustafayev-03/Optimisation-Algorithms/
 Keywords: optimisation,algorithms,metaheuristic,ML
 Classifier: Development Status :: 3 - Alpha
-Classifier: Intended Audience :: Data Scientists
-Classifier: Topic :: Machine Learning :: Optimisation
-Classifier: License :: OSI Approved :: GNU General Public License
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
 Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8

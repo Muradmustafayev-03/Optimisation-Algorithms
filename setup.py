@@ -82,10 +82,10 @@ setup(
         #   5 - Production/Stable
         "Development Status :: 3 - Alpha",
         # Indicate who your project is intended for
-        "Intended Audience :: Data Scientists",
-        "Topic :: Machine Learning :: Optimisation",
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
         # Pick your license as you wish
-        "License :: OSI Approved :: GNU General Public License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate you support Python 3. These classifiers are *not*
         # checked by 'pip install'. See instead 'python_requires' below.
