@@ -1,6 +1,11 @@
 LICENSE
 README.md
 setup.py
+src/Optimisation_Algorithms.egg-info/PKG-INFO
+src/Optimisation_Algorithms.egg-info/SOURCES.txt
+src/Optimisation_Algorithms.egg-info/dependency_links.txt
+src/Optimisation_Algorithms.egg-info/requires.txt
+src/Optimisation_Algorithms.egg-info/top_level.txt
 src/optimisation_algorithms.egg-info/PKG-INFO
 src/optimisation_algorithms.egg-info/SOURCES.txt
 src/optimisation_algorithms.egg-info/dependency_links.txt
