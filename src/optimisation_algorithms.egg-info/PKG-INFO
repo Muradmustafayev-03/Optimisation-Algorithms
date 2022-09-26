@@ -26,6 +26,18 @@ License-File: LICENSE
 # Optimisation-Algorithms
 A collection of the most commonly used Optimisation Algorithms for Data Science &amp; Machine Learning
 
+---
+
+This repository is created by and belongs to: https://github.com/Muradmustafayev-03
+
+Contributing guide: https://github.com/Muradmustafayev-03/Optimisation-Algorithms/blob/main/CONTRIBUTING.md
+
+To report any issues: https://github.com/Muradmustafayev-03/Optimisation-Algorithms/issues
+
+To install the package as a library use: ***pip install optimisation-algorithms==1.0.0***
+
+---
+
 In this project I try to collect as many useful Optimisation Algorithms as possible, and write them in a simple and reusable way.
 The idea is write all these algorithms in python, in a fundamental, yet easy-to-use way, with *numpy* being the only external library used.
 The project is currently on the early stages of the development, but one can already try and implement it in their own projects.
@@ -70,7 +82,3 @@ These algorithms don't stock at *local minimums*, but directly find the *global*
 There are multiple *benchmark functions* used in this project, and they are divided into several types depending on their shape.
 
 *For more information and the mathematical definition of the functions see: https://www.sfu.ca/~ssurjano/optimization.html*
-
----
-
-This repository is created by and belongs to: https://github.com/Muradmustafayev-03
