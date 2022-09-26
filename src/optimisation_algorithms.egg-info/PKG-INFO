@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: optimisation-algorithms
-Version: 1.0.0
+Version: 1.0.1
 Summary: A collection of the most commonly used Optimisation Algorithms for Data Science & Machine Learning
 Home-page: https://github.com/Muradmustafayev-03/Optimisation-Algorithms
 Author: Murad Mustafayev
@@ -34,7 +34,7 @@ Contributing guide: https://github.com/Muradmustafayev-03/Optimisation-Algorithm
 
 To report any issues: https://github.com/Muradmustafayev-03/Optimisation-Algorithms/issues
 
-To install the package as a library use: ***pip install optimisation-algorithms==1.0.0***
+To install the package as a library use: ***pip install optimisation-algorithms==1.0.1***
 
 ---
 
