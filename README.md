@@ -9,7 +9,11 @@ Contributing guide: https://github.com/Muradmustafayev-03/Optimisation-Algorithm
 
 To report any issues: https://github.com/Muradmustafayev-03/Optimisation-Algorithms/issues
 
-To install the package as a library use: ***pip install optimisation-algorithms***
+To install the package as a library use: 
+> *pip install optimisation-algorithms*
+
+Then to import:
+> *import optimisation-algorithms*
 
 ---
 
