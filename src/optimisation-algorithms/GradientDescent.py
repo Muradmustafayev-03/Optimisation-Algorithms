@@ -3,6 +3,7 @@ from abc import abstractmethod
 import numpy as np
 from exceptions.FailedToConverge import FailedToConverge
 
+
 class GradientDescent:
     """
     Optimisation using Gradient Descent.
