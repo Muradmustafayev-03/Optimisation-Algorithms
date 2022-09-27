@@ -22,3 +22,5 @@ src/optimisation_algorithms/benchmark_functions/imports.py
 src/optimisation_algorithms/benchmark_functions/many_local_minimums.py
 src/optimisation_algorithms/benchmark_functions/other.py
 src/optimisation_algorithms/benchmark_functions/tests.py
+src/optimisation_algorithms/exceptions/FailedToConverge.py
+src/optimisation_algorithms/exceptions/__init__.py
