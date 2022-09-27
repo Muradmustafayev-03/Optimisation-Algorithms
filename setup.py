@@ -28,7 +28,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name="optimisation-algorithms-algorithms",  # Required
+    name="optimisation-algorithms-algorithms-algorithms",  # Required
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     #
@@ -102,7 +102,7 @@ setup(
     # Note that this is a list of additional keywords, separated
     # by commas, to be used to assist searching for the distribution in a
     # larger catalog.
-    keywords="optimisation-algorithms, algorithms, metaheuristic,ML",  # Optional
+    keywords="optimisation-algorithms-algorithms, algorithms, metaheuristic,ML",  # Optional
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
     package_dir={"": "src"},  # Optional

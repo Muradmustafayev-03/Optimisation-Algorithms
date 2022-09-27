@@ -1,7 +1,7 @@
 import random
 from abc import abstractmethod
 import numpy as np
-
+from exceptions.FailedToConverge import FailedToConverge
 
 class GradientDescent:
     """
@@ -24,6 +24,7 @@ class GradientDescent:
         Finds a local minima of the function.
     :return:
     """
+
     def __init__(self, d: int, _range: float = 1000):
         """
         Parameters
@@ -42,7 +43,7 @@ class GradientDescent:
     def grad(self, x: np.array) -> np.array:
         pass
 
-    def optimize(self, max_iterations: int = 10000, alpha: float = 0.2, tol: float = 10 ** (-20),
+    def optimize(self, max_iterations: int = 100000, alpha: float = 0.02, tol: float = 10 ** (-20),
                  randomize: bool = False) -> np.array:
         """
         Finds a local minima of the function.
@@ -66,11 +67,14 @@ class GradientDescent:
         current = (np.random.rand(self.d) - 0.5) * self.range
 
         for _ in range(max_iterations):
-            step = self.grad(current) * alpha * (random.random() ** int(randomize))
+            try:
+                step = self.grad(current) * alpha * (random.random() ** int(randomize))
 
-            if step.all() < tol:
-                break
-            current = current - step
+                if step.all() < tol:
+                    break
+                current = current - step
+            except RuntimeWarning as w:
+                raise FailedToConverge().with_traceback(w.__traceback__)
 
         return current
 
@@ -98,6 +102,7 @@ class BatchGradientDescent(GradientDescent):
         Inherited from the parent class. Finds a local minima of the function.
     :return:
     """
+
     def __init__(self, gradient: callable, d: int, _range: float = 1000):
         """
         Parameters
@@ -144,6 +149,7 @@ class ApproximatedGradientDescent(GradientDescent):
         Inherited from the parent class. Finds a local minima of the function.
     :return:
     """
+
     def __init__(self, func: callable, d: int, _range: float = 1000):
         """
         Parameters
