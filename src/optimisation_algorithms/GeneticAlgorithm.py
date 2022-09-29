@@ -4,50 +4,50 @@ import numpy as np
 
 class GeneticAlgorithm:
     """
-        Optimization using metaheuristic Genetic Algorithm,
-        that imitates natural evolution to find the fittest individual
+    Optimization using metaheuristic Genetic Algorithm,
+    that imitates natural evolution to find the fittest individual
 
-        Attributes
-        ----------
-        func : callable
-            Function to minimize
-        d: int
-            Number of dimensions of the function [f(x) = f(x_1, ..., x_d)]
-        _range: float
-            Range of values for the initial population x_1 in (-range/2; range/2)
+    Attributes
+    ----------
+    func : callable
+        Function to minimize
+    d: int
+        Number of dimensions of the function [f(x) = f(x_1, ..., x_d)]
+    _range: float
+        Range of values for the initial population x_1 in (-range/2; range/2)
 
-        Methods
-        -------
-        generate_population(size: int, _range: float = 1)
-            Generates an initial population.
+    Methods
+    -------
+    generate_population(size: int, _range: float = 1)
+        Generates an initial population.
 
-        eval(population: numpy.array)
-            Evaluates the given population to the function.
+    eval(population: numpy.array)
+        Evaluates the given population to the function.
 
-        select_best(population: numpy.array, n: int)
-            Selects n best (fittest) individuals from the population.
+    select_best(population: numpy.array, n: int)
+        Selects n best (fittest) individuals from the population.
 
-        make_pairs(elite: numpy.array)
-            Makes all possible pairs out of the given population.
+    make_pairs(elite: numpy.array)
+        Makes all possible pairs out of the given population.
 
-        crossover(pairs: numpy.array, points: set = (0, 0.5, 1))
-            Does a crossover at the given points between parents to get 2 children from each pair.
+    crossover(pairs: numpy.array, points: set = (0, 0.5, 1))
+        Does a crossover at the given points between parents to get 2 children from each pair.
 
-        breed(population, n_breed: int, n_remain: int, crossover_points: set = (0, 0.5, 1))
-            Generates a new population by replacing the worst individuals of an old generation
-            with the best individuals of the new generation.
+    breed(population, n_breed: int, n_remain: int, crossover_points: set = (0, 0.5, 1))
+        Generates a new population by replacing the worst individuals of an old generation
+        with the best individuals of the new generation.
 
-        mutate(population, individuals_rate=0.5, genes_rate=0.1, _range: float = 1.)
-            Applies some random changes to the population. Can be applied either to the whole
-            population, or to the newly created generation.
+    mutate(population, individuals_rate=0.5, genes_rate=0.1, _range: float = 1.)
+        Applies some random changes to the population. Can be applied either to the whole
+        population, or to the newly created generation.
 
-        evolve(self, population_size: int = 1000, n_breed: int = 200, n_remain: int = 200,
-        crossover_points: set = (0, 0.5, 1), individuals_mutation_rate: float = 0.5,
-        genes_mutation_rate: float = 0.1, mutation_range: float = 1.,
-        max_iterations: int = 10000, _terminate: int = 1000):
-            Finds the global minima of the function by simulating an evolving population.
-        :return:
-        """
+    evolve(self, population_size: int = 1000, n_breed: int = 200, n_remain: int = 200,
+    crossover_points: set = (0, 0.5, 1), individuals_mutation_rate: float = 0.5,
+    genes_mutation_rate: float = 0.1, mutation_range: float = 1.,
+    max_iterations: int = 10000, _terminate: int = 1000):
+        Finds the global minima of the function by simulating an evolving population.
+    :return:
+    """
 
     def __init__(self, func: callable, d: int, _range: float = 1000):
         """
