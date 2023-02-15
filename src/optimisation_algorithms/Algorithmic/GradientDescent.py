@@ -1,3 +1,4 @@
+import warnings
 from typing import Tuple
 import numpy as np
 
@@ -23,10 +24,13 @@ class GradientDescent:
         Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
-    def __init__(self, learning_rate: float = 0.1, max_iter: int = 100000, tol: float = 1e-8, ):
+    def __init__(self, learning_rate: float = 0.1, max_iter: int = 100000, tol: float = 1e-8,
+                 rand_min: float = 0, rand_max: float = 1):
         self.learning_rate = learning_rate
         self.max_iter = max_iter
         self.tol = tol
+        self.rand_min = rand_min
+        self.rand_max = rand_max
 
     @staticmethod
     def gradient(f: callable, x: np.ndarray, h: float = 1e-8) -> np.ndarray:
@@ -58,6 +62,11 @@ class GradientDescent:
             gradient[i] = (f(x + h * identity[i]) - f(x - h * identity[i])) / (2 * h)
         return gradient
 
+    def __generate_random(self, d):
+        rng = np.random.default_rng()
+        x = rng.random(d)
+        return x * (self.rand_max - self.rand_min) + self.rand_min
+
     def fit(self, f: callable, d: int, maximize: bool = False) -> Tuple[np.ndarray, float]:
         """
         Finds the minimum or maximum of a function f using batch gradient descent starting from a random point.
@@ -81,14 +90,15 @@ class GradientDescent:
         assert callable(f), "f must be a callable function"
         assert isinstance(d, int) and d > 0, "d should be a positive integer"
 
-        rng = np.random.default_rng()
-        x = rng.random(d)
+        x = self.__generate_random(d)
         sign = 1 if maximize else -1
         for i in range(self.max_iter):
             grad = self.gradient(f, x)
             if np.linalg.norm(grad) < self.tol:
                 break
             x += sign * self.learning_rate * grad
+        else:
+            warnings.warn("Gradient failed to converge within the maximum number of iterations.")
         return x, f(x)
 
     def fit_multiple(self, f: callable, d: int, num_runs: int = 10, maximize: bool = False) -> Tuple[np.ndarray, float]:
@@ -141,8 +151,9 @@ class MiniBatchGD(GradientDescent):
         Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
-    def __init__(self, batch_size=10, learning_rate=0.1, max_iter=100000, tol=1e-8):
-        super().__init__(learning_rate, max_iter, tol)
+    def __init__(self, batch_size=10, learning_rate=0.1, max_iter=100000, tol=1e-8,
+                 rand_min: float = 0, rand_max: float = 1):
+        super().__init__(learning_rate, max_iter, tol, rand_min, rand_max)
         self.batch_size = batch_size
 
     def fit(self, f: callable, d: int, maximize: bool = False) -> Tuple[np.ndarray, float]:
@@ -167,7 +178,7 @@ class MiniBatchGD(GradientDescent):
         assert callable(f), "f must be a callable function"
         assert isinstance(d, int) and d > 0, "d should be a positive integer"
 
-        x = np.random.rand(d)
+        x = self.__generate_random(d)
         sign = 1 if maximize else -1
         f_old = f(x)
         for i in range(self.max_iter):
@@ -178,6 +189,8 @@ class MiniBatchGD(GradientDescent):
             if np.abs(f_new - f_old) < self.tol:
                 break
             f_old = f_new
+        else:
+            warnings.warn("Gradient failed to converge within the maximum number of iterations.")
 
         return x, f(x)
 
@@ -203,5 +216,8 @@ class SGD(MiniBatchGD):
         Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
-    def __init__(self, learning_rate=0.1, max_iter=100000, tol=1e-8):
-        super().__init__(batch_size=1, learning_rate=learning_rate, max_iter=max_iter, tol=tol)
+    def __init__(self, learning_rate=0.1, max_iter=100000, tol=1e-8, rand_min: float = 0, rand_max: float = 1):
+        super().__init__(batch_size=1, learning_rate=learning_rate, max_iter=max_iter, tol=tol,
+                         rand_min=rand_min, rand_max=rand_max)
+
+
