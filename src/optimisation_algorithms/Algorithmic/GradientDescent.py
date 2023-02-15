@@ -23,7 +23,7 @@ class GradientDescent:
         Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
-    def __init__(self, learning_rate: float = 0.1, max_iter: int = 1e4, tol: float = 1e-8):
+    def __init__(self, learning_rate: float = 0.1, max_iter: int = 100000, tol: float = 1e-8):
         self.learning_rate = learning_rate
         self.max_iter = max_iter
         self.tol = tol
@@ -115,7 +115,7 @@ class MiniBatchGD(GradientDescent):
         Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
-    def __init__(self, batch_size=10, learning_rate=0.1, max_iter=1e4, tol=1e-8):
+    def __init__(self, batch_size=10, learning_rate=0.1, max_iter=100000, tol=1e-8):
         super().__init__(learning_rate, max_iter, tol)
         self.batch_size = batch_size
 
@@ -147,7 +147,7 @@ class MiniBatchGD(GradientDescent):
         for i in range(self.max_iter):
             indices = np.random.choice(d, self.batch_size)
             grad = self.gradient(f, x[indices])
-            x[indices] += sign * self.learning_rate * grad
+            x[indices] -= sign * self.learning_rate * grad
             f_new = f(x)
             if np.abs(f_new - f_old) < self.tol:
                 break
@@ -177,5 +177,5 @@ class SGD(MiniBatchGD):
         Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
-    def __init__(self, learning_rate=0.1, max_iter=1000, tol=1e-8):
+    def __init__(self, learning_rate=0.1, max_iter=100000, tol=1e-8):
         super().__init__(batch_size=1, learning_rate=learning_rate, max_iter=max_iter, tol=tol)
