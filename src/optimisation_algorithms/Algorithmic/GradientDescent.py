@@ -17,9 +17,9 @@ class GradientDescent:
 
     Methods:
     -------
-    gradient(f, x, h=1e-8):
+    gradient(f: callable, x: np.ndarray, h: float = 1e-8) -> np.ndarray:
         Computes the gradient of a function f at point x.
-    fit(f, d, maximize=False):
+    fit(self, f: callable, d: int, maximize: bool = False) -> Tuple[np.ndarray, float]:
         Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
@@ -29,7 +29,7 @@ class GradientDescent:
         self.tol = tol
 
     @staticmethod
-    def gradient(f: callable, x: np.ndarray, h=1e-8):
+    def gradient(f: callable, x: np.ndarray, h: float = 1e-8) -> np.ndarray:
         """
         Computes the gradient of a function f at point x.
 
@@ -58,11 +58,11 @@ class GradientDescent:
             gradient[i] = (f(x + h * identity[i]) - f(x - h * identity[i])) / (2 * h)
         return gradient
 
-    def fit(self, f, d, maximize=False) -> Tuple[np.ndarray, float]:
+    def fit(self, f: callable, d: int, maximize: bool = False) -> Tuple[np.ndarray, float]:
         """
-        Finds the minimum or maximum of a function f using mini-batch gradient descent starting from a random point.
+        Finds the minimum or maximum of a function f using batch gradient descent starting from a random point.
 
-        Parameters
+        Parameters:
         ----------
         f : callable
             A callable function.
@@ -72,7 +72,7 @@ class GradientDescent:
             If True, the method will find the maximum of the function. Otherwise, the default is False, and the method
             will find the minimum of the function.
 
-        Returns
+        Returns:
         -------
         Tuple[numpy.ndarray, float]
             The optimal point and the optimal value of f.
@@ -96,7 +96,7 @@ class MiniBatchGD(GradientDescent):
     """
     Mini-batch gradient descent optimizer.
 
-    Parameters
+    Attributes:
     ----------
     batch_size : int, optional
         The size of the mini-batch. Default is 10.
@@ -106,6 +106,13 @@ class MiniBatchGD(GradientDescent):
         The maximum number of iterations. Default is 1000.
     tol : float, optional
         The tolerance for convergence. Default is 1e-8.
+
+    Methods:
+    -------
+    gradient(f: callable, x: np.ndarray, h: float = 1e-8) -> np.ndarray:
+        Computes the gradient of a function f at point x.
+    fit(self, f: callable, d: int, maximize: bool = False) -> Tuple[np.ndarray, float]:
+        Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
     def __init__(self, batch_size=10, learning_rate=0.1, max_iter=1e4, tol=1e-8):
@@ -116,7 +123,7 @@ class MiniBatchGD(GradientDescent):
         """
         Finds the minimum or maximum of a function f using mini-batch gradient descent starting from a random point.
 
-        Parameters
+        Parameters:
         ----------
         f : callable
             A callable function.
@@ -126,7 +133,7 @@ class MiniBatchGD(GradientDescent):
             If True, the method will find the maximum of the function. Otherwise, the default is False, and the method
             will find the minimum of the function.
 
-        Returns
+        Returns:
         -------
         Tuple[numpy.ndarray, float]
             The optimal point and the optimal value of f.
@@ -152,6 +159,22 @@ class MiniBatchGD(GradientDescent):
 class SGD(MiniBatchGD):
     """
     Stochastic Gradient Descent.
+
+    Attributes:
+    ----------
+    learning_rate : float
+        The learning rate to use in the gradient descent update.
+    tol : float
+        The convergence threshold for the norm of the gradient.
+    max_iter : int
+        The maximum number of iterations to run before stopping.
+
+    Methods:
+    -------
+    gradient(f: callable, x: np.ndarray, h: float = 1e-8) -> np.ndarray:
+        Computes the gradient of a function f at point x.
+    fit(self, f: callable, d: int, maximize: bool = False) -> Tuple[np.ndarray, float]:
+        Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
     def __init__(self, learning_rate=0.1, max_iter=1000, tol=1e-8):
