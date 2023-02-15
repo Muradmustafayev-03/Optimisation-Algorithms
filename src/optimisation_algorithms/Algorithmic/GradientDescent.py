@@ -142,12 +142,12 @@ class MiniBatchGD(GradientDescent):
         assert isinstance(d, int) and d > 0, "d should be a positive integer"
 
         x = np.random.rand(d)
-        sign = -1 if maximize else 1
+        sign = 1 if maximize else -1
         f_old = f(x)
         for i in range(self.max_iter):
             indices = np.random.choice(d, self.batch_size)
             grad = self.gradient(f, x[indices])
-            x[indices] -= sign * self.learning_rate * grad
+            x[indices] += sign * self.learning_rate * grad
             f_new = f(x)
             if np.abs(f_new - f_old) < self.tol:
                 break
