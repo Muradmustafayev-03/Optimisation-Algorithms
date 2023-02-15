@@ -6,7 +6,6 @@ import numpy as np
 class GradientDescent:
     """
     Batch Gradient Descent.
-
     Attributes:
     ----------
     learning_rate : float
@@ -15,7 +14,6 @@ class GradientDescent:
         The convergence threshold for the norm of the gradient.
     max_iter : int
         The maximum number of iterations to run before stopping.
-
     Methods:
     -------
     gradient(f: callable, x: np.ndarray, h: float = 1e-8) -> np.ndarray:
@@ -36,7 +34,6 @@ class GradientDescent:
     def gradient(f: callable, x: np.ndarray, h: float = 1e-8) -> np.ndarray:
         """
         Computes the gradient of a function f at point x.
-
         Parameters:
         ----------
         f : callable
@@ -45,7 +42,6 @@ class GradientDescent:
             An array representing the point at which to compute the gradient.
         h : float
             A small value to use in the computation of the gradient.
-
         Returns:
         -------
         numpy.ndarray:
@@ -62,7 +58,7 @@ class GradientDescent:
             gradient[i] = (f(x + h * identity[i]) - f(x - h * identity[i])) / (2 * h)
         return gradient
 
-    def generate_random(self, d):
+    def generate_random_sample(self, d):
         rng = np.random.default_rng()
         x = rng.random(d)
         return x * (self.rand_max - self.rand_min) + self.rand_min
@@ -70,7 +66,6 @@ class GradientDescent:
     def fit(self, f: callable, d: int, maximize: bool = False) -> Tuple[np.ndarray, float]:
         """
         Finds the minimum or maximum of a function f using batch gradient descent starting from a random point.
-
         Parameters:
         ----------
         f : callable
@@ -80,7 +75,6 @@ class GradientDescent:
         maximize : bool, optional
             If True, the method will find the maximum of the function. Otherwise, the default is False, and the method
             will find the minimum of the function.
-
         Returns:
         -------
         x : np.ndarray
@@ -92,7 +86,7 @@ class GradientDescent:
         assert callable(f), "f must be a callable function"
         assert isinstance(d, int) and d > 0, "d should be a positive integer"
 
-        x = self.generate_random(d)
+        x = self.generate_random_sample(d)
         sign = 1 if maximize else -1
         for i in range(self.max_iter):
             grad = self.gradient(f, x)
@@ -106,7 +100,6 @@ class GradientDescent:
     def fit_multiple(self, f: callable, d: int, num_runs: int = 10, maximize: bool = False) -> Tuple[np.ndarray, float]:
         """
         Perform multiple runs of the optimization routine and return the best result.
-
         Parameters:
         -----------
         objective_func : callable
@@ -117,7 +110,6 @@ class GradientDescent:
             The number of optimization runs to perform.
         maximize : bool (default: False)
             Whether to maximize or minimize the objective function.
-
         Returns:
         --------
         x : np.ndarray
@@ -135,7 +127,6 @@ class GradientDescent:
 class MiniBatchGD(GradientDescent):
     """
     Mini-batch gradient descent optimizer.
-
     Attributes:
     ----------
     batch_size : int, optional
@@ -146,7 +137,6 @@ class MiniBatchGD(GradientDescent):
         The maximum number of iterations. Default is 1000.
     tol : float, optional
         The tolerance for convergence. Default is 1e-8.
-
     Methods:
     -------
     gradient(f: callable, x: np.ndarray, h: float = 1e-8) -> np.ndarray:
@@ -163,7 +153,6 @@ class MiniBatchGD(GradientDescent):
     def fit(self, f: callable, d: int, maximize: bool = False) -> Tuple[np.ndarray, float]:
         """
         Finds the minimum or maximum of a function f using mini-batch gradient descent starting from a random point.
-
         Parameters:
         ----------
         f : callable
@@ -173,7 +162,6 @@ class MiniBatchGD(GradientDescent):
         maximize : bool, optional
             If True, the method will find the maximum of the function. Otherwise, the default is False, and the method
             will find the minimum of the function.
-
         Returns:
         -------
         x : np.ndarray
@@ -184,7 +172,7 @@ class MiniBatchGD(GradientDescent):
         assert callable(f), "f must be a callable function"
         assert isinstance(d, int) and d > 0, "d should be a positive integer"
 
-        x = self.generate_random(d)
+        x = self.generate_random_sample(d)
         sign = 1 if maximize else -1
         f_old = f(x)
         for i in range(self.max_iter):
@@ -204,7 +192,6 @@ class MiniBatchGD(GradientDescent):
 class SGD(MiniBatchGD):
     """
     Stochastic Gradient Descent.
-
     Attributes:
     ----------
     learning_rate : float
@@ -213,7 +200,6 @@ class SGD(MiniBatchGD):
         The convergence threshold for the norm of the gradient.
     max_iter : int
         The maximum number of iterations to run before stopping.
-
     Methods:
     -------
     gradient(f: callable, x: np.ndarray, h: float = 1e-8) -> np.ndarray:
@@ -231,7 +217,6 @@ class SGD(MiniBatchGD):
 class ConjugateGradient(GradientDescent):
     """
     Initialize ConjugateGradient object.
-
     Parameters:
     -----------
     max_iter : int, optional
@@ -242,7 +227,6 @@ class ConjugateGradient(GradientDescent):
         The minimum value for initializing random parameters. Default is 0.
     rand_max : float, optional
         The maximum value for initializing random parameters. Default is 1.
-
     """
     def __init__(self, max_iter: int = 100000, tol: float = 1e-8,
                  rand_min: float = 0, rand_max: float = 1):
@@ -251,7 +235,6 @@ class ConjugateGradient(GradientDescent):
     def fit(self, f: callable, d: int, maximize: bool = False) -> Tuple[np.ndarray, float]:
         """
         Find the minimum or maximum of a function using Conjugate Gradient method.
-
         Parameters:
         -----------
         f : callable
@@ -260,16 +243,14 @@ class ConjugateGradient(GradientDescent):
             The number of parameters in the function.
         maximize : bool, optional
             If True, finds the maximum of the function instead of the minimum. Default is False.
-
         Returns:
         --------
         x : np.ndarray
             The parameter values at the minimum or maximum of the function.
         f(x) : float
             The value of the function at the minimum or maximum.
-
         """
-        x = self.generate_random(d)
+        x = self.generate_random_sample(d)
         sign = 1 if maximize else -1
         r = -self.gradient(f, x)
         p = r
