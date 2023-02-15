@@ -91,6 +91,32 @@ class GradientDescent:
             x += sign * self.learning_rate * grad
         return x, f(x)
 
+    def fit_multiple(self, f: callable, d: int, num_runs: int = 1, maximize: bool = False) -> Tuple[np.ndarray, float]:
+        """
+        Perform multiple runs of the optimization routine and return the best result.
+
+        Parameters:
+        -----------
+        objective_func : callable
+            The function to be optimized.
+        dimension : int
+            The dimensionality of the optimization problem.
+        num_runs : int (default: 1)
+            The number of optimization runs to perform.
+        maximize : bool (default: False)
+            Whether to maximize or minimize the objective function.
+
+        Returns:
+        --------
+        Tuple[numpy.ndarray, float]
+            The optimal point and the optimal value of f.
+        """
+        best_solution, min_val = None, np.inf
+        for _ in range(num_runs):
+            if self.fit(f, d, maximize)[1] < min_val:
+                best_solution, min_val = self.fit(f, d, maximize)
+        return best_solution, min_val
+
 
 class MiniBatchGD(GradientDescent):
     """
