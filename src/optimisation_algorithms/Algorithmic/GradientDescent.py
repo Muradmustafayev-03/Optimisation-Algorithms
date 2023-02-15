@@ -23,7 +23,7 @@ class GradientDescent:
         Finds the minimum or maximum of a function f using gradient descent starting from a random point.
     """
 
-    def __init__(self, learning_rate: float = 0.1, max_iter: int = 100000, tol: float = 1e-8):
+    def __init__(self, learning_rate: float = 0.1, max_iter: int = 100000, tol: float = 1e-8, ):
         self.learning_rate = learning_rate
         self.max_iter = max_iter
         self.tol = tol
@@ -91,7 +91,7 @@ class GradientDescent:
             x += sign * self.learning_rate * grad
         return x, f(x)
 
-    def fit_multiple(self, f: callable, d: int, num_runs: int = 1, maximize: bool = False) -> Tuple[np.ndarray, float]:
+    def fit_multiple(self, f: callable, d: int, num_runs: int = 10, maximize: bool = False) -> Tuple[np.ndarray, float]:
         """
         Perform multiple runs of the optimization routine and return the best result.
 
