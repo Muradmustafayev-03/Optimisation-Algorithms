@@ -227,3 +227,31 @@ class ConjugateGD(BaseGD, ABC):
             warnings.warn("Gradient failed to converge within the maximum number of iterations.")
 
         return x, self.f(x)
+
+
+class ExponentiallyWeightedGD(BaseGD, ABC):
+    @abstractmethod
+    def __init__(self, f: callable, d: int, learning_rate: float = 0.1, alpha: float = 0.9, max_iter: int = 10 ** 5,
+                 tol: float = 1e-8, h: float = 1e-8, rand_min: float = 0, rand_max: float = 1):
+        BaseGD.__init__(self, f, d, h, rand_min, rand_max)
+        self.learning_rate = learning_rate
+        self.max_iter = max_iter
+        self.alpha = alpha
+        self.tol = tol
+
+    def fit(self, maximize: bool = False) -> Tuple[np.ndarray, float]:
+        x = self.generate_random_sample()
+        sign = 1 if maximize else -1
+        f_old = self.f(x)
+        v = 0  # Initialize exponentially weighted moving average
+        for i in range(self.max_iter):
+            grad = self.gradient(x)
+            v = self.alpha * v + (1 - self.alpha) * grad**2
+            x += sign * self.learning_rate * grad / np.sqrt(v + 1e-8)  # Add 1e-8 to avoid division by zero
+            f_new = self.f(x)
+            if self.termination_criteria(grad=grad, f_old=f_old, f_new=f_new):
+                break
+            f_old = f_new
+        else:
+            warnings.warn("Gradient failed to converge within the maximum number of iterations.")
+        return x, self.f(x)
