@@ -17,9 +17,11 @@ class BaseGD(ABC):
     fit(maximize: bool = False) -> Tuple[np.ndarray, float]:
         Abstract method that finds the minimum or maximum of a function f using batch gradient descent
         starting from a random point.
-    selection(**kwargs) -> np.ndarray:
+    fit_multiple(self, num_runs: int = 10, maximize: bool = False) -> Tuple[np.ndarray, float]:
+        Perform multiple runs of the optimization routine and return the best result.
+    _selection(**kwargs) -> np.ndarray:
         Abstract method that selects a subset of features to use in the optimization process.
-    termination_criteria(**kwargs) -> bool:
+    _termination_criteria(**kwargs) -> bool:
         Abstract method that determines whether the optimization process should terminate.
 
     Raises:
@@ -65,7 +67,8 @@ class BaseGD(ABC):
 
         identity = np.identity(len(x))
         gradient = np.array(
-            [self.f(x + self.h * identity[i]) - self.f(x - self.h * identity[i]) for i in range(len(x))]) / (2 * self.h)
+            [self.f(x + self.h * identity[i]) - self.f(x - self.h * identity[i]) for i in range(len(x))]
+            ) / (2 * self.h)
         return gradient
 
     @abstractmethod
@@ -114,13 +117,13 @@ class BaseGD(ABC):
         return best_solution, min_val
 
     @abstractmethod
-    def selection(self, **kwargs) -> np.ndarray:
+    def _selection(self, **kwargs) -> np.ndarray:
         """
         Selects a subset of features to use in the optimization process.
         """
 
     @abstractmethod
-    def termination_criteria(self, **kwargs) -> bool:
+    def _termination_criteria(self, **kwargs) -> bool:
         """
         Determines whether the optimization process should terminate.
         """
@@ -136,10 +139,10 @@ class BatchGD(BaseGD, ABC):
         self.d = d
         self.tol = tol
 
-    def selection(self) -> np.ndarray:
+    def _selection(self) -> np.ndarray:
         return np.arange(self.d)
 
-    def termination_criteria(self, **kwargs) -> bool:
+    def _termination_criteria(self, **kwargs) -> bool:
         return np.abs(np.linalg.norm(kwargs['grad'])) < self.tol
 
 
@@ -154,10 +157,10 @@ class MiniBatchGD(BatchGD, ABC):
         self.tol = tol
         self.batch_size = batch_size
 
-    def selection(self) -> np.ndarray:
+    def _selection(self) -> np.ndarray:
         return np.random.choice(self.d, self.batch_size)
 
-    def termination_criteria(self, **kwargs) -> bool:
+    def _termination_criteria(self, **kwargs) -> bool:
         return np.abs(kwargs['f_new'] - kwargs['f_old']) < self.tol
 
 
@@ -185,11 +188,11 @@ class SimpleGD(BaseGD, ABC):
         sign = 1 if maximize else -1
         f_old = self.f(x)
         for i in range(self.max_iter):
-            indices = self.selection()
+            indices = self._selection()
             grad = self.gradient(x[indices])
             x[indices] += sign * self.learning_rate * grad
             f_new = self.f(x)
-            if self.termination_criteria(grad=grad, f_old=f_old, f_new=f_new):
+            if self._termination_criteria(grad=grad, f_old=f_old, f_new=f_new):
                 break
             f_old = f_new
         else:
@@ -217,7 +220,7 @@ class ConjugateGD(BaseGD, ABC):
             x += alpha * p
             r_new = sign * self.gradient(x)
             f_new = self.f(x)
-            if self.termination_criteria(grad=r_new, f_old=f_old, f_new=f_new):
+            if self._termination_criteria(grad=r_new, f_old=f_old, f_new=f_new):
                 break
             f_old = f_new
             beta = np.dot(r_new, r_new) / np.dot(r, r)
@@ -249,7 +252,7 @@ class ExponentiallyWeightedGD(BaseGD, ABC):
             v = self.alpha * v + (1 - self.alpha) * grad**2
             x += sign * self.learning_rate * grad / np.sqrt(v + 1e-8)  # Add 1e-8 to avoid division by zero
             f_new = self.f(x)
-            if self.termination_criteria(grad=grad, f_old=f_old, f_new=f_new):
+            if self._termination_criteria(grad=grad, f_old=f_old, f_new=f_new):
                 break
             f_old = f_new
         else:
