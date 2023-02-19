@@ -112,8 +112,9 @@ class BaseGD(ABC):
         """
         best_solution, min_val = None, np.inf
         for _ in range(num_runs):
-            if self.fit(maximize)[1] < min_val:
-                best_solution, min_val = self.fit(maximize)
+            x, f_x = self.fit(maximize)
+            if f_x < min_val:
+                best_solution, min_val = x, f_x
         return best_solution, min_val
 
     @abstractmethod
