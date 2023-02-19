@@ -186,7 +186,7 @@ class SimpleGD(BaseGD, ABC):
         x = self.generate_random_sample()
         sign = 1 if maximize else -1
         f_old = self.f(x)
-        for i in range(self.max_iter):
+        for _ in range(self.max_iter):
             indices = self._selection()
             grad = self.gradient(x[indices])
             x[indices] += sign * self.learning_rate * grad
@@ -213,7 +213,7 @@ class ConjugateGD(BaseGD, ABC):
         r = -self.gradient(x)
         f_old = self.f(x)
         p = r
-        for i in range(self.max_iter):
+        for _ in range(self.max_iter):
             Ap = self.gradient(p)
             alpha = np.dot(r, r) / np.dot(p, Ap)
             x += alpha * p
@@ -246,10 +246,10 @@ class ExponentiallyWeightedGD(BaseGD, ABC):
         sign = 1 if maximize else -1
         f_old = self.f(x)
         v = 0  # Initialize exponentially weighted moving average
-        for i in range(self.max_iter):
+        for _ in range(self.max_iter):
             grad = self.gradient(x)
             v = self.alpha * v + (1 - self.alpha) * grad**2
-            x += sign * self.learning_rate * grad / np.sqrt(v + 1e-8)  # Add 1e-8 to avoid division by zero
+            x += sign * self.learning_rate * grad / np.sqrt(v + self.h)  # Add the small value to avoid division by zero
             f_new = self.f(x)
             if self._termination_criteria(grad=grad, f_old=f_old, f_new=f_new):
                 break
