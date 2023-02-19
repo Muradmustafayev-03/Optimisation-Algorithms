@@ -47,9 +47,7 @@ class BaseGD(ABC):
         x : np.ndarray
             An array of randomized values.
         """
-        rng = np.random.default_rng()
-        x = rng.random(self.d)
-        return x * (self.rand_max - self.rand_min) + self.rand_min
+        return np.random.uniform(self.rand_min, self.rand_max, self.d)
 
     def gradient(self, x: np.ndarray) -> np.ndarray:
         """
