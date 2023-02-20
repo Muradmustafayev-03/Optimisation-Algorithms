@@ -21,8 +21,6 @@ class BaseGD(ABC):
         Perform multiple runs of the optimization routine and return the best result.
     _selection(**kwargs) -> np.ndarray:
         Abstract method that selects a subset of features to use in the optimization process.
-    _termination_criteria(**kwargs) -> bool:
-        Abstract method that determines whether the optimization process should terminate.
 
     Raises:
     ------
@@ -121,12 +119,6 @@ class BaseGD(ABC):
         Selects a subset of features to use in the optimization process.
         """
 
-    @abstractmethod
-    def _termination_criteria(self, **kwargs) -> bool:
-        """
-        Determines whether the optimization process should terminate.
-        """
-
 
 class BatchGD(BaseGD, ABC):
     """
@@ -140,9 +132,6 @@ class BatchGD(BaseGD, ABC):
 
     def _selection(self) -> np.ndarray:
         return np.arange(self.d)
-
-    def _termination_criteria(self, **kwargs) -> bool:
-        return np.abs(np.linalg.norm(kwargs['grad'])) < self.tol
 
 
 class MiniBatchGD(BatchGD, ABC):
@@ -158,9 +147,6 @@ class MiniBatchGD(BatchGD, ABC):
 
     def _selection(self) -> np.ndarray:
         return np.random.choice(self.d, self.batch_size)
-
-    def _termination_criteria(self, **kwargs) -> bool:
-        return np.abs(kwargs['f_new'] - kwargs['f_old']) < self.tol
 
 
 class StochasticGD(MiniBatchGD, ABC):
@@ -185,15 +171,12 @@ class SimpleGD(BaseGD, ABC):
     def fit(self, maximize: bool = False) -> Tuple[np.ndarray, float]:
         x = self.generate_random_sample()
         sign = 1 if maximize else -1
-        f_old = self.f(x)
         for _ in range(self.max_iter):
             indices = self._selection()
             grad = self.gradient(x[indices])
             x[indices] += sign * self.learning_rate * grad
-            f_new = self.f(x)
-            if self._termination_criteria(grad=grad, f_old=f_old, f_new=f_new):
+            if np.abs(np.linalg.norm(grad)) < self.tol:
                 break
-            f_old = f_new
         else:
             warnings.warn("Gradient failed to converge within the maximum number of iterations.")
         return x, self.f(x)
@@ -211,17 +194,14 @@ class ConjugateGD(BaseGD, ABC):
         x = self.generate_random_sample()
         sign = 1 if maximize else -1
         r = -self.gradient(x)
-        f_old = self.f(x)
         p = r
         for _ in range(self.max_iter):
             Ap = self.gradient(p)
             alpha = np.dot(r, r) / np.dot(p, Ap)
             x += alpha * p
             r_new = sign * self.gradient(x)
-            f_new = self.f(x)
-            if self._termination_criteria(grad=r_new, f_old=f_old, f_new=f_new):
+            if np.abs(np.linalg.norm(r)) < self.tol:
                 break
-            f_old = f_new
             beta = np.dot(r_new, r_new) / np.dot(r, r)
             p = r_new + beta * p
             r = r_new
@@ -244,16 +224,13 @@ class ExponentiallyWeightedGD(BaseGD, ABC):
     def fit(self, maximize: bool = False) -> Tuple[np.ndarray, float]:
         x = self.generate_random_sample()
         sign = 1 if maximize else -1
-        f_old = self.f(x)
         v = 0  # Initialize exponentially weighted moving average
         for _ in range(self.max_iter):
             grad = self.gradient(x)
             v = self.alpha * v + (1 - self.alpha) * grad**2
             x += sign * self.learning_rate * grad / np.sqrt(v + self.h)  # Add the small value to avoid division by zero
-            f_new = self.f(x)
-            if self._termination_criteria(grad=grad, f_old=f_old, f_new=f_new):
+            if np.abs(np.linalg.norm(grad)) < self.tol:
                 break
-            f_old = f_new
         else:
             warnings.warn("Gradient failed to converge within the maximum number of iterations.")
         return x, self.f(x)
