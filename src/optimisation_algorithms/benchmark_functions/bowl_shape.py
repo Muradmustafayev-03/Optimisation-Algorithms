@@ -1,56 +1,115 @@
-from .imports import *
+import numpy as np
 
 
-def perm0(x: Vector, beta=10) -> float:
+def bohachevsky(x: np.ndarray) -> np.ndarray:
     """
-        The function is usually evaluated on the hypercube xi ∈ [-d, d], for all i = 1, ..., d \n
-        Global Minimum: f(x*) = 0 at x* = (1, 1/2,...,1/d)
+    The Bohachevsky function.
+
+    Global optimum: f(0, 0) = 0
+
+    Args:
+    - x: a NumPy array of shape (2,) representing the point at which to evaluate the function
+
+    Returns:
+    - The value of the Bohachevsky function at point x
     """
-    d = len(x)
-    return sum(sum((j + 1 + beta) * (x[j] ** (i + 1) - 1 / ((j + 1) ** (i + 1)))
-                   for j in range(d)) ** 2 for i in range(d))
+    x1, x2 = x
+    return x1 ** 2 + 2 * x2 ** 2 - 0.3 * np.cos(3 * np.pi * x1) - 0.4 * np.cos(4 * np.pi * x2) + 0.7
 
 
-def rotated_hyper_ellipsoid(x: Vector) -> float:
+def perm0(x: np.ndarray, beta: float) -> np.ndarray:
     """
-        The function is usually evaluated on the hypercube xi ∈ [-65.536, 65.536], for all i = 1, ..., d \n
-        Global Minimum: f(x*) = 0 at x* = (0,...,0)
-    """
-    d = len(x)
-    return sum((d-i) * (x[i] ** 2) for i in range(d))
+    The Perm Function 0.
 
+    Global optimum: f(0,...,d-1) = 0
 
-def sphere(x: Vector) -> float:
-    """
-        The function is usually evaluated on the hypercube xi ∈ [-5.12, 5.12], for all i = 1, ..., d \n
-        Global Minimum: f(x*) = 0 at x* = (0,...,0)
-    """
-    return sum(x_i ** 2 for x_i in x)
+    Args:
+    - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
+    - beta: a float parameter controlling the "sharpness" of the function
 
-
-def sum_of_powers(x: Vector) -> float:
-    """
-        The function is usually evaluated on the hypercube xi ∈ [-1, 1], for all i = 1, ..., d \n
-        Global Minimum: f(x*) = 0 at x* = (0,...,0)
+    Returns:
+    - The value of the Perm Function 0 at point x
     """
     d = len(x)
-    return sum(abs(x[i]) ** (i + 2) for i in range(d))
+    p = np.arange(1, d + 1)
+    inner_sum = (np.power(np.abs(x), p) + beta) / p
+    return np.sum(np.power(inner_sum, 10))
 
 
-def sum_of_squares(x: Vector) -> float:
+def rotated_hyper_ellipsoid(x: np.ndarray) -> np.ndarray:
     """
-        The function is usually evaluated on the hypercube xi ∈ [-10, 10], for all i = 1, ..., d, \n
-        although this may be restricted to the hypercube xi ∈ [-5.12, 5.12], for all i = 1, ..., d \n
-        Global Minimum: f(x*) = 0 at x* = (0,...,0)
+    The Rotated Hyper-Ellipsoid Function.
+
+    Global optimum: f(0,...,0) = 0
+
+    Args:
+    - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
+
+    Returns:
+    - The value of the Rotated Hyper-Ellipsoid Function at point x
     """
     d = len(x)
-    return sum((i + 1) * x[i] ** 2 for i in range(d))
+    return np.sum(np.power(np.dot(np.tril(np.ones((d, d))), x), 2))
 
 
-def trid(x: Vector) -> float:
+def sphere(x: np.ndarray) -> np.ndarray:
     """
-        The function is usually evaluated on the hypercube xi ∈ [-d2, d2], for all i = 1, ..., d \n
-        Global Minimum: f(x*) = -d(d+4)(d-1)/6, at x_i = i(d+1-i), for all i in 1,2,...,d
+    The Sphere Function.
+
+    Global optimum: f(0,...,0) = 0
+
+    Args:
+    - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
+
+    Returns:
+    - The value of the Sphere Function at point x
+    """
+    return np.sum(np.power(x, 2))
+
+
+def sum_of_different_powers(x: np.ndarray) -> np.ndarray:
+    """
+    The Sum of Different Powers Function.
+
+    Global optimum: f(0,...,0) = 0
+
+    Args:
+    - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
+
+    Returns:
+    - The value of the Sum of Different Powers Function at point x
     """
     d = len(x)
-    return sum((x[i] - 1) ** 2 for i in range(d)) - sum(x[i] * x[i - 1] for i in range(1, d))
+    powers = np.arange(1, d + 1)
+    return np.sum(np.power(np.abs(x), powers))
+
+
+def sum_squares(x: np.ndarray) -> np.ndarray:
+    """
+    The Sum Squares Function.
+
+    Global optimum: f(0,...,0) = 0
+
+    Args:
+    - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
+
+    Returns:
+    - The value of the Sum Squares Function at point x
+    """
+    d = len(x)
+    return np.sum(np.arange(1, d+1) * np.power(x, 2))
+
+
+def trid(x: np.ndarray) -> np.ndarray:
+    """
+    The Trid Function.
+
+    Global optimum: f(0,...,0) = -d(d+4)/6
+
+    Args:
+    - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
+
+    Returns:
+    - The value of the Trid Function at point x
+    """
+    return np.sum(np.power(x - 1, 2)) - np.sum(x[1:] * x[:-1])
