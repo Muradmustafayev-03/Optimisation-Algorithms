@@ -7,10 +7,12 @@ def bohachevsky(x: np.ndarray) -> np.ndarray:
 
     Global optimum: f(0, 0) = 0
 
-    Args:
+    Arguments:
+    ---------
     - x: a NumPy array of shape (2,) representing the point at which to evaluate the function
 
     Returns:
+    -------
     - The value of the Bohachevsky function at point x
     """
     x1, x2 = x
@@ -23,11 +25,13 @@ def perm0(x: np.ndarray, beta: float) -> np.ndarray:
 
     Global optimum: f(0,...,d-1) = 0
 
-    Args:
+    Arguments:
+    ---------
     - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
     - beta: a float parameter controlling the "sharpness" of the function
 
     Returns:
+    -------
     - The value of the Perm Function 0 at point x
     """
     d = len(x)
@@ -42,7 +46,8 @@ def rotated_hyper_ellipsoid(x: np.ndarray) -> np.ndarray:
 
     Global optimum: f(0,...,0) = 0
 
-    Args:
+    Arguments:
+    ---------
     - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
 
     Returns:
@@ -58,10 +63,12 @@ def sphere(x: np.ndarray) -> np.ndarray:
 
     Global optimum: f(0,...,0) = 0
 
-    Args:
+    Arguments:
+    ---------
     - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
 
     Returns:
+    -------
     - The value of the Sphere Function at point x
     """
     return np.sum(np.power(x, 2))
@@ -73,10 +80,12 @@ def sum_of_different_powers(x: np.ndarray) -> np.ndarray:
 
     Global optimum: f(0,...,0) = 0
 
-    Args:
+    Arguments:
+    ---------
     - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
 
     Returns:
+    -------
     - The value of the Sum of Different Powers Function at point x
     """
     d = len(x)
@@ -90,10 +99,12 @@ def sum_squares(x: np.ndarray) -> np.ndarray:
 
     Global optimum: f(0,...,0) = 0
 
-    Args:
+    Arguments:
+    ---------
     - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
 
     Returns:
+    -------
     - The value of the Sum Squares Function at point x
     """
     d = len(x)
@@ -106,10 +117,12 @@ def trid(x: np.ndarray) -> np.ndarray:
 
     Global optimum: f(0,...,0) = -d(d+4)/6
 
-    Args:
+    Arguments:
+    ---------
     - x: a NumPy array of shape (d,) representing the point at which to evaluate the function
 
     Returns:
+    -------
     - The value of the Trid Function at point x
     """
     return np.sum(np.power(x - 1, 2)) - np.sum(x[1:] * x[:-1])

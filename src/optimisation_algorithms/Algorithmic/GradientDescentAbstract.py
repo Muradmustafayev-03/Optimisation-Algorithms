@@ -10,21 +10,21 @@ class BaseGD(ABC):
 
     Methods:
     -------
-    generate_random_sample() -> np.ndarray[float]:
+    - generate_random_sample() -> np.ndarray[float]:
         Generates a random initial sample of dimension d of values between self.rand_min and self.rand_max
-    gradient(x: np.ndarray) -> np.ndarray:
+    - gradient(x: np.ndarray) -> np.ndarray:
         Computes the gradient of a function f at point x.
-    fit(maximize: bool = False) -> Tuple[np.ndarray, float]:
+    - fit(maximize: bool = False) -> Tuple[np.ndarray, float]:
         Abstract method that finds the minimum or maximum of a function f using batch gradient descent
         starting from a random point.
-    fit_multiple(self, num_runs: int = 10, maximize: bool = False) -> Tuple[np.ndarray, float]:
+    - fit_multiple(self, num_runs: int = 10, maximize: bool = False) -> Tuple[np.ndarray, float]:
         Perform multiple runs of the optimization routine and return the best result.
-    _selection(**kwargs) -> np.ndarray:
+    - _selection(**kwargs) -> np.ndarray:
         Abstract method that selects a subset of features to use in the optimization process.
 
     Raises:
     ------
-    NotImplementedError:
+    - NotImplementedError:
         If either of the abstract methods is not implemented in a subclass.
     """
 
@@ -42,7 +42,7 @@ class BaseGD(ABC):
 
         Returns:
         -------
-        x : np.ndarray
+        - x : np.ndarray
             An array of randomized values.
         """
         return np.random.uniform(self.rand_min, self.rand_max, self.d)
@@ -53,11 +53,11 @@ class BaseGD(ABC):
 
         Parameters:
         ----------
-        x : numpy.ndarray
+        - x : numpy.ndarray
             An array representing the point at which to compute the gradient.
         Returns:
         -------
-        numpy.ndarray:
+        - numpy.ndarray:
             An array representing the gradient of the function self.f at point x.
         """
 
@@ -74,18 +74,18 @@ class BaseGD(ABC):
 
         Parameters:
         ----------
-        maximize : bool (default: False)
+        - maximize : bool (default: False)
             If True, the method will find the maximum of the function. Otherwise, the default is False, and the method
             will find the minimum of the function.
         Returns:
         -------
-        x : np.ndarray
+        - x : np.ndarray
             The parameter values at the minimum or maximum of the function.
-        f(x) : float
+        - f(x) : float
             The value of the function at the minimum or maximum.
         Raises:
         ------
-        RuntimeWarning:
+        - RuntimeWarning:
             Gradient failed to converge within the maximum number of iterations.
         """
 
@@ -95,15 +95,15 @@ class BaseGD(ABC):
 
         Parameters:
         -----------
-        num_runs : int (default: 1)
+        - num_runs : int (default: 1)
             The number of optimization runs to perform.
-        maximize : bool (default: False)
+        - maximize : bool (default: False)
             Whether to maximize or minimize the objective function.
         Returns:
         --------
-        x : np.ndarray
+        - x : np.ndarray
             The parameter values at the minimum or maximum of the function.
-        f(x) : float
+        - f(x) : float
             The value of the function at the minimum or maximum.
         """
         best_solution, min_val = None, np.inf
