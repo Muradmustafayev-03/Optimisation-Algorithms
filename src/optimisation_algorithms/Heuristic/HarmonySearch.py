@@ -1,176 +1,179 @@
+from typing import Tuple
 import numpy as np
-from copy import deepcopy
 
 
 class HarmonySearch:
     """
-    Optimization using metaheuristic Harmony Search Algorithm,
-    that finds the minimum of the function, improvising harmonies.
+    Harmony Search optimization algorithm.
 
-    Attributes
+    Parameters:
     ----------
-    func : callable
-        Function to minimize
-    d: int
-        Number of dimensions of the function [f(x) = f(x_1, ..., x_d)]
-    _range: float
-        Range of values for the initial population x_1 in (-range/2; range/2)
+    - f : callable
+        The objective function to be optimized.
+    - d : int
+        The dimensionality of the decision variables.
+    - hm_size : int (default=30)
+        The number of harmonies in the harmony memory.
+    - hmcr : float (default=0.8)
+        The harmony memory considering rate.
+    - par : float (default=0.4)
+        The pitch adjustment rate.
+    - bandwidth : float (default=1)
+        The bandwidth for pitch adjustment.
+    - top_n : int (default=1)
+        The number of best harmony solutions to consider for replacement.
+    - tol : float (default=1e-8)
+        The convergence threshold.
+    - patience : int (default=10)
+        The number of iterations to wait for improvement before stopping the optimization.
+    - max_iter : int (default=10 ** 5)
+        The maximum number of iterations to run.
+    - rand_min : float (default=0)
+        The minimum value for random initialization of decision variables.
+    - rand_max : float (default=1)
+        The maximum value for random initialization of decision variables.
 
-    Methods
-    -------
-    generate_hm(hms: int)
-        Generates initial Harmony Memory of random harmonies.
-
-    eval(self, hm: numpy.array)
-        Evaluates the given Harmony Memory to the function.
-
-    improvise(self, hm: np.array, hmcr: float, par: float, bw: float)
-        Improvises a new Harmony Memory out of the given one.
-
-    change_hm(self, old_hm: np.array, new_hm: np.array)
-        Replaces the worst harmony of the Old Harmony Memory with a better one.
-
-    find_harmony(self, hms=30, max_iterations=10000, hmcr=0.8, par=0.4, bw=2)
-        Finds the global minima of the function.
-    :return:
+    Methods:
+    --------
+    - eval(hm: np.ndarray) -> np.ndarray:
+        Evaluates the objective function at each point in the harmony memory.
+    - improvise(hm: np.ndarray) -> np.ndarray:
+        Generates a new harmony by adjusting elements of the input harmony.
+    - replace_worst_with_best(old_hm: np.ndarray, new_hm: np.ndarray, maximize: bool = False) -> np.ndarray:
+        Replaces the worst solutions in the harmony memory with the best solutions.
+    - fit(maximize: bool = False) -> Tuple[np.ndarray, float]:
+        Finds the optimal solution for the given objective function.
     """
-    def __init__(self, f: callable, d: int, hms: int, hmcr: float, par: float, bw: float, max_iter: int = 10**5,
-                 rand_min: float = 0, rand_max: float = 1):
-        """
-        Parameters
-        ----------
-        func : callable
-            Function to minimize
-        d: int
-            Number of dimensions of the function [f(x) = f(x_1, ..., x_d)]
-        _range: float
-            Range of values for the initial population x_1 in (-range/2; range/2)
-
-        :return: None
-        """
+    def __init__(self, f: callable, d: int, hm_size: int = 30, hmcr: float = 0.8, par: float = 0.4,
+                 bandwidth: float = 1, top_n: int = 1, tol: float = 1e-8, patience: int = 10,
+                 max_iter: int = 10 ** 5, rand_min: float = 0, rand_max: float = 1):
         self.f = f
         self.d = d
-        self.hms = hms
+        self.hms = hm_size
         self.hmcr = hmcr
         self.par = par
-        self.bw = bw
+        self.bw = bandwidth
+        self.top_n = top_n
+        self.tol = tol
+        self.patience = patience
         self.max_iter = max_iter
         self.rand_min = rand_min
         self.rand_max = rand_max
 
-    def generate_hm(self):
+    def eval(self, hm: np.array) -> np.ndarray:
         """
-        Generates initial Harmony Memory of random harmonies.
+        Evaluates the harmony memories in the harmony memory.
 
-        Parameters
+        Parameters:
         ----------
-        hms: int
-            Harmony Memory Size, number of harmonies in Harmony Memory
+        - hm : numpy.ndarray
+            An array representing the harmony memory (HM) to evaluate.
 
-        Returns
+        Returns:
         -------
-        :return: numpy.array: Harmony Memory
+        - numpy.ndarray:
+             An array representing the results of evaluating each solution in the harmony memory.
         """
-        return np.random.uniform(self.rand_min, self.rand_max, (self.hms, self.d))
+        return np.vectorize(self.f)(*hm.T)
 
-    def eval(self, hm: np.array):
+    def improvise(self, hm: np.array) -> np.ndarray:
         """
-        Evaluates the given Harmony Memory to the function.
+        Generates a new harmony by improvising and adjusting the existing harmony.
 
-        Parameters
+        Parameters:
         ----------
-        hm: numpy.array
-            Harmony Memory, array of harmonies
+        - hm : numpy.ndarray
+            A numpy array representing the current harmony to improvise.
 
-        Returns
+        Returns:
         -------
-        :return: numpy.array: fittness values of all the harmonies
+        - numpy.ndarray:
+            A numpy array representing the new harmony generated by improvisation.
         """
-        return np.apply_along_axis(self.f, 1, hm)
-    
-    def improvise(self, hm: np.array):
-        """
-        Improvises a new Harmony Memory out of the given one.
 
-        Parameters
-        ----------
-        hm: numpy.array
-            Harmony Memory, array of harmonies
-        hmcr: float
-            Share of harmonies to replace with a random harmony
-        par: float
-            Share of notes in a harmony to shift
-        bw: float
-            Shift range for notes to change
+        new_hm = hm.copy()
 
-        Returns
-        -------
-        :return: numpy.array: new improvised Harmony Memory
-        """
-        new_hm = deepcopy(hm)
+        # Replace the elements to adjust with new random values
+        adjust_mask = np.random.rand(*new_hm.shape) > self.hmcr
+        new_hm[adjust_mask] = np.random.uniform(self.rand_min, self.rand_max, adjust_mask.sum())
 
-        for row in range(len(hm)):
-            new_hm[row][np.random.rand() > self.hmcr] = np.random.uniform(self.rand_min, self.rand_max, 1)
-            new_hm[row][np.random.rand() > self.par] += np.random.uniform(-self.bw, self.bw, 1)
+        # Apply the adjustments to the elements in the mutation mask
+        adjust_amounts = np.random.uniform(-self.bw, self.bw, size=new_hm.shape)
+        mutate_mask = np.random.rand(*new_hm.shape) > self.par
+        new_hm[mutate_mask] += adjust_amounts[mutate_mask]
 
         return new_hm
 
-    def change_hm(self, old_hm: np.array, new_hm: np.array):
+    def replace_worst_with_best(self, old_hm: np.array, new_hm: np.array, maximize: bool = False) -> np.ndarray:
         """
-        Replaces the worst harmony of the Old Harmony Memory
-        with the best one from the New Harmony Memory if it is better.
+        Replaces the worst solutions in the old harmony memory with the best solutions in the new harmony memory.
 
-        Parameters
+        Parameters:
         ----------
-        old_hm: numpy.array
-            Old Harmony Memory
-        new_hm:
-            New Harmony Memory
+        - old_hm : numpy.ndarray
+            The old harmony memory.
+        - new_hm : numpy.ndarray
+            The new harmony memory.
+        - maximize : bool, optional
+            A boolean indicating whether the optimization problem is maximization or minimization. Defaults to False.
 
-        Returns
+        Returns:
         -------
-        :return: numpy.array: changed hm
+        - numpy.ndarray:
+            The updated old harmony memory after replacing the worst solutions with the best solutions.
         """
         old_results = self.eval(old_hm)
         new_results = self.eval(new_hm)
 
-        old_worst_i = np.argmax(old_results)
-        new_best_i = np.argmin(new_results)
+        sign = -1 if maximize else 1
 
-        if float(new_results[new_best_i]) < float(old_results[old_worst_i]):
-            old_hm[old_worst_i] = new_hm[new_best_i]
+        sorted_indices = np.argsort(old_results)[::sign]
+        best_indices = sorted_indices[:self.top_n]
+        worst_indices = sorted_indices[-self.top_n:]
+
+        # Replace the worst solutions with the best solutions
+        replace_mask = sign * new_results[best_indices] < sign * old_results[worst_indices]
+        old_hm[worst_indices[replace_mask]] = new_hm[best_indices[replace_mask]]
 
         return old_hm
 
-    def find_harmony(self):
+    def fit(self, maximize: bool = False) -> Tuple[np.ndarray, float]:
         """
-        Finds the global minima of the function.
+        Finds the minimum or maximum of a function f using Harmony Search algorithm.
 
-        Parameters
+        Parameters:
         ----------
-        hms: int
-            Harmony Memory Size, number of harmonies in Harmony Memory
-        max_iterations: int
-            Maximal number of iterations
-        hmcr: float
-            Share of harmonies to replace with a random harmony
-        par: float
-            Share of notes in a harmony to shift
-        bw: float
-            Shift range for notes to change
-
-        Returns
+        - maximize : bool (default: False)
+            If True, the method will find the maximum of the function. Otherwise, the default is False, and the method
+            will find the minimum of the function.
+        Returns:
         -------
-        :return: numpy.array
-            x_min = (x_1, ..., x_d) where f(x_min) = min f(x)
+        - best_hm : numpy.ndarray
+            An array representing the decision variables that optimize the objective function.
+        - best_val : float
+            The optimized function value.
         """
-        hm = self.generate_hm()
-        results = self.eval(hm)
+        hm = np.random.uniform(self.rand_min, self.rand_max, (self.hms, self.d))
+        best_hm_idx = np.argmin(self.eval(hm)) if not maximize else np.argmax(self.eval(hm))
+        best_hm = hm[best_hm_idx]
+        best_val = self.f(best_hm)
+        current_patience = self.patience
 
-        for _ in range(self.max_iter):
+        for i in range(self.max_iter):
             new_hm = self.improvise(hm)
-            hm = self.change_hm(hm, new_hm)
-            results = self.eval(hm)
+            hm = self.replace_worst_with_best(hm, new_hm, maximize)
 
-        best_i = np.argmin(results)
-        return hm[best_i]
+            new_best_hm_idx = np.argmax(self.eval(hm)) if maximize else np.argmin(self.eval(hm))
+            new_best_hm = hm[new_best_hm_idx]
+            new_best_val = self.f(new_best_hm)
+
+            if abs(new_best_val - best_val) < self.tol:
+                current_patience -= 1
+                if current_patience == 0:
+                    break
+            else:
+                current_patience = self.patience
+                best_hm = new_best_hm
+                best_val = new_best_val
+
+        return best_hm, best_val
