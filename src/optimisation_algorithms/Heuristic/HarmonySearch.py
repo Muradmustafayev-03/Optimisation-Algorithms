@@ -1,4 +1,3 @@
-from random import random
 import numpy as np
 from copy import deepcopy
 
@@ -35,7 +34,8 @@ class HarmonySearch:
         Finds the global minima of the function.
     :return:
     """
-    def __init__(self, func: callable, d: int, _range: float = 1000):
+    def __init__(self, f: callable, d: int, hms: int, hmcr: float, par: float, bw: float, max_iter: int = 10**5,
+                 rand_min: float = 0, rand_max: float = 1):
         """
         Parameters
         ----------
@@ -48,11 +48,17 @@ class HarmonySearch:
 
         :return: None
         """
-        self.func = func
+        self.f = f
         self.d = d
-        self.range = _range
+        self.hms = hms
+        self.hmcr = hmcr
+        self.par = par
+        self.bw = bw
+        self.max_iter = max_iter
+        self.rand_min = rand_min
+        self.rand_max = rand_max
 
-    def generate_hm(self, hms: int):
+    def generate_hm(self):
         """
         Generates initial Harmony Memory of random harmonies.
 
@@ -65,7 +71,7 @@ class HarmonySearch:
         -------
         :return: numpy.array: Harmony Memory
         """
-        return (np.random.rand(hms, self.d) - 0.5) * self.range
+        return np.random.uniform(self.rand_min, self.rand_max, (self.hms, self.d))
 
     def eval(self, hm: np.array):
         """
@@ -80,9 +86,9 @@ class HarmonySearch:
         -------
         :return: numpy.array: fittness values of all the harmonies
         """
-        return np.apply_along_axis(self.func, 1, hm)
+        return np.apply_along_axis(self.f, 1, hm)
     
-    def improvise(self, hm: np.array, hmcr: float, par: float, bw: float):
+    def improvise(self, hm: np.array):
         """
         Improvises a new Harmony Memory out of the given one.
 
@@ -104,8 +110,8 @@ class HarmonySearch:
         new_hm = deepcopy(hm)
 
         for row in range(len(hm)):
-            new_hm[row][random() > hmcr] = (random() - 0.5) * self.range
-            new_hm[row][random() > par] += bw * (2 * random() - 1)
+            new_hm[row][np.random.rand() > self.hmcr] = np.random.uniform(self.rand_min, self.rand_max, 1)
+            new_hm[row][np.random.rand() > self.par] += np.random.uniform(-self.bw, self.bw, 1)
 
         return new_hm
 
@@ -136,7 +142,7 @@ class HarmonySearch:
 
         return old_hm
 
-    def find_harmony(self, hms=30, max_iterations=10000, hmcr=0.8, par=0.4, bw=2):
+    def find_harmony(self):
         """
         Finds the global minima of the function.
 
@@ -158,11 +164,11 @@ class HarmonySearch:
         :return: numpy.array
             x_min = (x_1, ..., x_d) where f(x_min) = min f(x)
         """
-        hm = self.generate_hm(hms)
+        hm = self.generate_hm()
         results = self.eval(hm)
 
-        for _ in range(max_iterations):
-            new_hm = self.improvise(hm, hmcr, par, bw)
+        for _ in range(self.max_iter):
+            new_hm = self.improvise(hm)
             hm = self.change_hm(hm, new_hm)
             results = self.eval(hm)
 
