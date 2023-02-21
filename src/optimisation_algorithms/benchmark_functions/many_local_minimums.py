@@ -1,11 +1,12 @@
 import numpy as np
 
 
-def ackley(x: np.ndarray) -> np.ndarray:
+def ackley(x: np.ndarray) -> float:
     """
     The Ackley Function.
     Typically, evaluated on the input domain [-32.768, 32.768]^d.
 
+    Dimensions: d
     Global optimum: f(0,...,0) = 0
 
     Arguments:
@@ -22,11 +23,12 @@ def ackley(x: np.ndarray) -> np.ndarray:
     return -20 * np.exp(term1) - np.exp(term2) + 20 + np.exp(1)
 
 
-def bukin(x: np.ndarray) -> np.ndarray:
+def bukin(x: np.ndarray) -> float:
     """
     The Bukin Function N. 6.
     Typically, evaluated on the input domain [-15, -5] x [-3, 3].
 
+    Dimensions: 2
     Global optimum: f(-10, 1) = 0
 
     Arguments:
@@ -43,11 +45,12 @@ def bukin(x: np.ndarray) -> np.ndarray:
     return term1 + term2
 
 
-def cross_in_tray(x: np.ndarray) -> np.ndarray:
+def cross_in_tray(x: np.ndarray) -> float:
     """
     The Cross-in-Tray Function.
     Typically, evaluated on the input domain [-10, 10]^2.
 
+    Dimensions: 2
     Global optimum: f(1.3491, -1.3491) = -2.06261
 
     Arguments:
@@ -64,11 +67,12 @@ def cross_in_tray(x: np.ndarray) -> np.ndarray:
     return -0.0001 * np.power(term2 + 1, 0.1)
 
 
-def drop_wave(x: np.ndarray) -> np.ndarray:
+def drop_wave(x: np.ndarray) -> float:
     """
     The Drop-Wave Function.
     Typically, evaluated on the input domain [-5.12, 5.12]^d.
 
+    Dimensions: 2
     Global optimum: f(0,0) = -1
 
     Arguments:
@@ -90,6 +94,7 @@ def eggholder(x: np.ndarray) -> float:
     The Eggholder function.
     Typically, evaluated on the input domain [-512, 512]^2.
 
+    Dimensions: 2
     Global optimum: f(512, 404.2319) = -959.6407
 
     Arguments:
@@ -106,24 +111,24 @@ def eggholder(x: np.ndarray) -> float:
     return term1 + term2 - 959.6407
 
 
-def gramacy_lee(x: np.ndarray) -> float:
+def gramacy_lee(x: float) -> float:
     """
     The Gramacy & Lee (2012) function.
     Typically, evaluated on the input domain [0, 1]^d.
 
+    Dimensions: 1
     Global optimum: f(0.548563362974474, -0.550903198335186) = -0.869011135358703
 
     Arguments:
     ---------
-    - x: a NumPy array of shape (1,) representing the point at which to evaluate the function
+    - x: a float representing the point at which to evaluate the function
 
     Returns:
     -------
     - The value of the Gramacy & Lee (2012) function at point x
     """
-    x1 = x[0]
-    term1 = np.sin(10 * np.pi * x1) / (2 * x1)
-    term2 = (x1 - 1) ** 4
+    term1 = np.sin(10 * np.pi * x) / (2 * x)
+    term2 = (x - 1) ** 4
     return term1 + term2 - 0.5
 
 
@@ -132,6 +137,7 @@ def griewank(x: np.ndarray) -> float:
     The Griewank function.
     Typically, evaluated on the input domain [-600, 600]^d.
 
+    Dimensions: d
     Global optimum: f(0, ..., 0) = 0
 
     Arguments:
@@ -153,6 +159,7 @@ def holder_table(x: np.ndarray) -> float:
     The Holder Table function.
     Typically, evaluated on the input domain [-10, 10]^2.
 
+    Dimensions: 2
     Global optimum: f(8.05502, 9.66459) = -19.2085
 
     Arguments:
@@ -173,6 +180,7 @@ def langermann(x: np.ndarray, A: np.ndarray = None, c: np.ndarray = None, W: np.
     The Langermann function.
     Typically, evaluated in the domain [0, 10]^d, where d is the number of input dimensions.
 
+    Dimensions: d
     Global optimum: Unknown
 
     Arguments:
@@ -202,6 +210,7 @@ def levy(x: np.ndarray) -> float:
     The Levy function.
     Typically, evaluated in the domain [-10, 10]^d, where d is the number of input dimensions.
 
+    Dimensions: d
     Global optimum: f(1, 1, ..., 1) = 0
 
     Arguments:
@@ -212,7 +221,6 @@ def levy(x: np.ndarray) -> float:
     -------
     - The value of the Levy function at point x
     """
-    d = x.shape[0]
     w = 1 + (x - 1) / 4
     term1 = (np.sin(np.pi * w[0])) ** 2
     term2 = np.sum((w[:-1] - 1) ** 2 * (1 + 10 * (np.sin(np.pi * w[:-1] + 1)) ** 2))
@@ -225,6 +233,7 @@ def levy_n13(x: np.ndarray) -> np.ndarray:
     The Levy Function N. 13.
     Typically, evaluated on the square xi ∈ [-10, 10], for all i = 1, 2.
 
+    Dimensions: d
     Global optimum: f(1,...,1) = 0
 
     Arguments:
@@ -248,6 +257,7 @@ def rastrigin(x: np.ndarray) -> float:
     The Rastrigin Function.
     Typically, evaluated on the hypercube xi ∈ [-5.12, 5.12], for all i = 1, …, d.
 
+    Dimensions: d
     Global optimum: f(0,...,0) = 0
 
     Arguments:
@@ -258,8 +268,8 @@ def rastrigin(x: np.ndarray) -> float:
     --------
     - The value of the Rastrigin Function at point x
     """
-    n = x.shape[0]
-    return 10 * n + np.sum(x ** 2 - 10 * np.cos(2 * np.pi * x))
+    d = x.shape[0]
+    return 10 * d + np.sum(x ** 2 - 10 * np.cos(2 * np.pi * x))
 
 
 def schaffer_n2(x: np.ndarray) -> float:
@@ -267,11 +277,16 @@ def schaffer_n2(x: np.ndarray) -> float:
     The Schaffer Function N. 2.
 
     Domain: [-100, 100]^2
-
+    Dimensions: 2
     Global minimum: f(0,0) = 0
 
-    :param x: a numpy array of shape (2,) representing the point at which to evaluate the function
-    :return: the value of the Schaffer Function N. 2 at point x
+    Arguments:
+    ----------
+    - x: a numpy array of shape (2,) representing the point at which to evaluate the function
+
+    Returns:
+    --------
+    - The value of the Schaffer Function N. 2 at point x
     """
     x1, x2 = x
     numerator = np.square(np.sin(np.sqrt(x1 ** 2 + x2 ** 2))) - 0.5
@@ -284,11 +299,16 @@ def schaffer_n4(x: np.ndarray) -> float:
     The Schaffer Function N. 4.
 
     Domain: [-100, 100]^2
-
+    Dimensions: 2
     Global minimum: f(0, ±1.25313) = 0.292579
 
-    :param x: a numpy array of shape (2,) representing the point at which to evaluate the function
-    :return: the value of the Schaffer Function N. 4 at point x
+    Arguments:
+    ----------
+    - x: a numpy array of shape (2,) representing the point at which to evaluate the function
+
+    Returns:
+    --------
+    - The value of the Schaffer Function N. 4 at point x
     """
     x1, x2 = x
     term1 = np.cos(np.sin(np.abs(x1 ** 2 - x2 ** 2)))
@@ -299,13 +319,18 @@ def schaffer_n4(x: np.ndarray) -> float:
 def schwefel(x: np.ndarray) -> float:
     """
     The Schwefel Function.
-
     Typically, evaluated on the hypercube xi ∈ [-500, 500]^n
 
+    Dimensions: d
     Global minimum: f(x*) = 0 at x* = (420.9687,..., 420.9687)
 
-    :param x: a numpy array of shape (n,) representing the point at which to evaluate the function
-    :return: the value of the Schwefel Function at point x
+    Arguments:
+    ----------
+    - x: a numpy array of shape (n,) representing the point at which to evaluate the function
+
+    Returns:
+    --------
+    - The value of the Schwefel Function at point x
     """
     return - np.sum(x * np.sin(np.sqrt(np.abs(x))))
 
@@ -316,6 +341,7 @@ def shubert(x: np.ndarray) -> np.ndarray:
     The function is usually evaluated on the square xi ∈ [-10, 10], for all i = 1, 2,
     although this may be restricted to the square xi ∈ [-5.12, 5.12], for all i = 1, 2.
 
+    Dimensions: d
     Global optimum: f(x) = -186.7309 (multiple global optima)
 
     Arguments:

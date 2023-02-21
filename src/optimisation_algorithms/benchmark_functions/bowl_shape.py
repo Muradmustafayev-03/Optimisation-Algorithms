@@ -1,11 +1,12 @@
 import numpy as np
 
 
-def bohachevsky(x: np.ndarray) -> np.ndarray:
+def bohachevsky(x: np.ndarray) -> float:
     """
     The Bohachevsky function.
     Typically, evaluated on the input domain [-100, 100] x [-100, 100].
 
+    Dimensions: 2
     Global optimum: f(0, 0) = 0
 
     Arguments:
@@ -25,6 +26,7 @@ def perm0(x: np.ndarray, beta: float) -> np.ndarray:
     The Perm Function 0.
     Typically, evaluated on the input domain [-1, 1]^d.
 
+    Dimensions: d
     Global optimum: f(0,...,d-1) = 0
 
     Arguments:
@@ -47,6 +49,7 @@ def rotated_hyper_ellipsoid(x: np.ndarray) -> np.ndarray:
     The Rotated Hyper-Ellipsoid Function.
     Typically, evaluated on the input domain [-65.536, 65.536]^d.
 
+    Dimensions: d
     Global optimum: f(0,...,0) = 0
 
     Arguments:
@@ -65,6 +68,7 @@ def sphere(x: np.ndarray) -> np.ndarray:
     The Sphere Function.
     Typically, evaluated on the input domain [-5.12, 5.12]^d.
 
+    Dimensions: d
     Global optimum: f(0,...,0) = 0
 
     Arguments:
@@ -83,6 +87,7 @@ def sum_of_different_powers(x: np.ndarray) -> np.ndarray:
     The Sum of Different Powers Function.
     Typically, evaluated on the input domain [-1, 1]^d.
 
+    Dimensions: d
     Global optimum: f(0,...,0) = 0
 
     Arguments:
@@ -103,6 +108,7 @@ def sum_squares(x: np.ndarray) -> np.ndarray:
     The Sum Squares Function.
     Typically, evaluated on the input domain [-10, 10]^d.
 
+    Dimensions: d
     Global optimum: f(0,...,0) = 0
 
     Arguments:
@@ -122,6 +128,7 @@ def trid(x: np.ndarray) -> np.ndarray:
     The Trid Function.
     Typically, evaluated on the input domain [-d^2, d^2]^d.
 
+    Dimensions: d
     Global optimum: f(0,...,0) = -d(d+4)/6
 
     Arguments:
