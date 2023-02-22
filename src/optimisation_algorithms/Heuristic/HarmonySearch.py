@@ -1,8 +1,9 @@
+from PopulationalAbstract import PopulationalOptimization
 from typing import Tuple
 import numpy as np
 
 
-class HarmonySearch:
+class HarmonySearch(PopulationalOptimization):
     """
     Harmony Search optimization algorithm.
 
@@ -37,6 +38,8 @@ class HarmonySearch:
     --------
     - eval(hm: np.ndarray) -> np.ndarray:
         Evaluates the objective function at each point in the harmony memory.
+    - generate_population()
+        Generates an initial population.
     - improvise(hm: np.ndarray) -> np.ndarray:
         Generates a new harmony by adjusting elements of the input harmony.
     - replace_worst_with_best(old_hm: np.ndarray, new_hm: np.ndarray, maximize: bool = False) -> np.ndarray:
@@ -49,7 +52,7 @@ class HarmonySearch:
                  max_iter: int = 10 ** 5, rand_min: float = 0, rand_max: float = 1):
         self.f = f
         self.d = d
-        self.hms = hm_size
+        self.population_size = hm_size
         self.hmcr = hmcr
         self.par = par
         self.bw = bandwidth
@@ -59,22 +62,6 @@ class HarmonySearch:
         self.max_iter = max_iter
         self.rand_min = rand_min
         self.rand_max = rand_max
-
-    def eval(self, hm: np.array) -> np.ndarray:
-        """
-        Evaluates the harmony memories in the harmony memory.
-
-        Parameters:
-        ----------
-        - hm : numpy.ndarray
-            An array representing the harmony memory (HM) to evaluate.
-
-        Returns:
-        -------
-        - numpy.ndarray:
-             An array representing the results of evaluating each solution in the harmony memory.
-        """
-        return np.apply_along_axis(self.f, 1, hm)
 
     def improvise(self, hm: np.array) -> np.ndarray:
         """
@@ -138,22 +125,7 @@ class HarmonySearch:
         return old_hm
 
     def fit(self, maximize: bool = False) -> Tuple[np.ndarray, float]:
-        """
-        Finds the minimum or maximum of a function f using Harmony Search algorithm.
-
-        Parameters:
-        ----------
-        - maximize : bool (default: False)
-            If True, the method will find the maximum of the function. Otherwise, the default is False, and the method
-            will find the minimum of the function.
-        Returns:
-        -------
-        - best_hm : numpy.ndarray
-            An array representing the decision variables that optimize the objective function.
-        - best_val : float
-            The optimized function value.
-        """
-        hm = np.random.uniform(self.rand_min, self.rand_max, (self.hms, self.d))
+        hm = self.generate_population()
         best_hm_idx = np.argmin(self.eval(hm)) if not maximize else np.argmax(self.eval(hm))
         best_hm = hm[best_hm_idx]
         best_val = self.f(best_hm)

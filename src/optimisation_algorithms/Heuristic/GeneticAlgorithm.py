@@ -1,315 +1,192 @@
-import random
+from PopulationalAbstract import PopulationalOptimization
+from typing import Tuple
 import numpy as np
 
 
-class GeneticAlgorithm:
+class GeneticAlgorithm(PopulationalOptimization):
     """
-    Optimization using metaheuristic Genetic Algorithm,
-    that imitates natural evolution to find the fittest individual
+    Genetic Algorithm optimization algorithm.
 
-    Attributes
+    Parameters:
     ----------
-    func : callable
-        Function to minimize
-    d: int
-        Number of dimensions of the function [f(x) = f(x_1, ..., x_d)]
-    _range: float
-        Range of values for the initial population x_1 in (-range/2; range/2)
+    - f : callable
+        The objective function to be optimized.
+    - d : int
+        The dimensionality of the decision variables.
+    - pop_size : int (default=50)
+        The size of the population.
+    - mutation_rate : float (default=0.1)
+        The mutation rate.
+    - crossover_rate : float (default=0.8)
+        The crossover rate.
+    - n_elites : int (default=1)
+        The number of elite solutions to keep in each generation.
+    - tol : float (default=1e-8)
+        The convergence threshold.
+    - patience : int (default=10**3)
+        The number of iterations to wait for improvement before stopping the optimization.
+    - max_iter : int (default=10**5)
+        The maximum number of iterations to run.
+    - rand_min : float (default=0)
+        The minimum value for random initialization of decision variables.
+    - rand_max : float (default=1)
+        The maximum value for random initialization of decision variables.
 
-    Methods
-    -------
-    generate_population(size: int, _range: float = 1)
+    Methods:
+    --------
+    - eval(pop: np.ndarray) -> np.ndarray:
+        Evaluates the objective function at each point in the population.
+    - generate_population()
         Generates an initial population.
-
-    eval(population: numpy.array)
-        Evaluates the given population to the function.
-
-    select_best(population: numpy.array, n: int)
-        Selects n best (fittest) individuals from the population.
-
-    make_pairs(elite: numpy.array)
-        Makes all possible pairs out of the given population.
-
-    crossover(pairs: numpy.array, points: set = (0, 0.5, 1))
-        Does a crossover at the given points between parents to get 2 children from each pair.
-
-    breed(population, n_breed: int, n_remain: int, crossover_points: set = (0, 0.5, 1))
-        Generates a new population by replacing the worst individuals of an old generation
-        with the best individuals of the new generation.
-
-    mutate(population, individuals_rate=0.5, genes_rate=0.1, _range: float = 1.)
-        Applies some random changes to the population. Can be applied either to the whole
-        population, or to the newly created generation.
-
-    evolve(self, population_size: int = 1000, n_breed: int = 200, n_remain: int = 200,
-    crossover_points: set = (0, 0.5, 1), individuals_mutation_rate: float = 0.5,
-    genes_mutation_rate: float = 0.1, mutation_range: float = 1.,
-    max_iterations: int = 10000, _terminate: int = 1000):
-        Finds the global minima of the function by simulating an evolving population.
-    :return:
+    - select(pop: np.ndarray, fitness: np.ndarray) -> np.ndarray:
+        Selects individuals for mating based on their fitness.
+    - crossover(parents: np.ndarray) -> np.ndarray:
+        Combines the decision variables of two parents to create a new offspring.
+    - mutate(individual: np.ndarray) -> np.ndarray:
+        Mutates an individual by randomly adjusting its decision variables.
+    - elitism(pop: np.ndarray, fitness: np.ndarray, n_elites: int) -> np.ndarray:
+        Selects the elite solutions from the population.
+    - fit(maximize: bool = False) -> Tuple[np.ndarray, float]:
+        Finds the optimal solution for the given objective function.
     """
-
-    def __init__(self, func: callable, d: int, _range: float = 1000):
-        """
-        Parameters
-        ----------
-        func : callable
-            Function to minimize
-        d: int
-            Number of dimensions of the function [f(x) = f(x_1, ..., x_d)]
-        _range: float
-            Range of values for the initial population x_1 in (-range/2; range/2)
-
-        :return: None
-        """
-        self.func = func
+    def __init__(self, f: callable, d: int, pop_size: int = 50, mutation_rate: float = 0.1, crossover_rate: float = 0.8,
+                 n_elites: int = 1, tol: float = 1e-8, patience: int = 10**3, max_iter: int = 10**5,
+                 rand_min: float = 0, rand_max: float = 1):
+        self.f = f
         self.d = d
-        self.range = _range
+        self.population_size = pop_size
+        self.mutation_rate = mutation_rate
+        self.crossover_rate = crossover_rate
+        self.n_elites = n_elites
+        self.tol = tol
+        self.patience = patience
+        self.max_iter = max_iter
+        self.rand_min = rand_min
+        self.rand_max = rand_max
 
-    def generate_population(self, size: int, _range: float = 1):
+    def select(self, pop: np.ndarray, fitness: np.ndarray) -> np.ndarray:
         """
-        Generates an initial population
+        Selects individuals for mating based on their fitness.
 
-        Parameters
+        Parameters:
         ----------
-        size: int
-            Number of individuals in the population
-        _range: float
-            Range of values for individuals of the population x_1 in (-range/2; range/2)
+        - pop : numpy.ndarray
+            A numpy array representing the population.
+        - fitness : numpy.ndarray
+            A numpy array representing the fitness values of each individual in the population.
 
-        Returns
+        Returns:
         -------
-        :return: numpy.array: population
+        - numpy.ndarray:
+            A numpy array representing the selected individuals for mating.
         """
-        return (np.random.rand(size, self.d) - 0.5) * _range
+        idx = np.random.choice(self.population_size, self.population_size, p=fitness/fitness.sum())
+        return pop[idx]
 
-    def eval(self, population: np.array):
+    def crossover(self, parents: np.ndarray) -> np.ndarray:
         """
-        Evaluates the given population to the function
+        Combine the decision variables of two parents to create a new offspring.
 
-        Parameters
+        Parameters:
         ----------
-        population: numpy.array
-            Population to evaluate
+        - parents : np.ndarray of shape (2, self.d)
+            The decision variables of the two parents.
 
-        Returns
+        Returns:
         -------
-        :return: numpy.array: fittness values of all the individuals
+        - child : np.ndarray of shape (self.d,)
+            The decision variables of the new offspring.
         """
-        return np.apply_along_axis(self.func, 1, population)
+        crossover_point = np.random.randint(self.d)
+        offspring = np.concatenate([parents[0][:crossover_point], parents[1][crossover_point:]])
+        return offspring
 
-    def select_best(self, population: np.array, n: int):
+    def mutate(self, individual: np.ndarray) -> np.ndarray:
         """
-        Selects n best (fittest) individuals from the population.
+        Mutates an individual by randomly adjusting its decision variables.
 
-        Parameters
+        Parameters:
         ----------
-        population: numpy.array \n
-        n: int
+        - individual : np.ndarray
+            The individual to mutate.
 
-        Returns
+        Returns:
         -------
-        :return: numpy.array: n the fittest individuals from the population
+        - np.ndarray
+            The mutated individual.
         """
-        fitness = list(self.eval(population))
-        indices = sorted(range(len(fitness)), key=lambda sub: fitness[sub])[:n]
-        return population[indices]
+        mask = np.random.rand(*individual.shape) < self.mutation_rate
+        mutation = np.random.uniform(self.rand_min, self.rand_max, size=individual.shape)
+        individual[mask] = mutation[mask]
+        return individual
 
     @staticmethod
-    def make_pairs(elite: np.array):
+    def elitism(pop: np.ndarray, fitness: np.ndarray, n_elites: int) -> np.ndarray:
         """
-        Makes all possible pairs out of the given population.
+        Selects the elite solutions from the population.
 
-        Parameters
+        Parameters:
         ----------
-        elite: numpy.array
-            Population or an array of the best individuals of the population
+        - pop : np.ndarray
+            The population of solutions.
+        - fitness : np.ndarray
+            The fitness values of each solution in the population.
+        - n_elites : int
+            The number of elite solutions to select.
 
-        Returns
+        Returns:
         -------
-        :return: numpy.array
-            Array of pairs of the shape (n_p, 2, d), n_p = n*(n-1)/2 where n = len(elite)
+        - elite_pop : np.ndarray
+            The elite solutions.
         """
-        return [[elite[i], elite[j]] for i in range(len(elite)) for j in range(len(elite)) if i < j]
+        sorted_indices = np.argsort(fitness)
+        elite_indices = sorted_indices[-n_elites:]
+        elite_pop = pop[elite_indices, :]
+        return elite_pop
 
-    def __pivots(self, points: set):
-        pivots = [int(point * self.d) for point in points]
-        if 0 not in pivots:
-            pivots.append(0)
-        if self.d not in pivots:
-            pivots.append(self.d)
-        pivots.sort()
+    def fit(self, maximize=False) -> Tuple[np.ndarray, float]:
+        # Generate initial population
+        pop = self.generate_population()
 
-        return pivots
+        # Initialize variables
+        n_parents = int(np.ceil((self.population_size - self.n_elites) / 2))
+        n_mutations = int(np.ceil(self.mutation_rate * self.population_size))
+        n_crossovers = int(np.ceil(self.crossover_rate * self.population_size))
+        best_fitness = -np.inf if maximize else np.inf
+        best_solution = None
+        improvement_counter = 0
 
-    @staticmethod
-    def __crossover(pairs: np.array, pivots: list):
-        population = []
-
-        for pair in pairs:
-            child_1 = []
-            child_2 = []
-
-            for pivot in pivots[:-1]:
-                index = pivots.index(pivot)
-                next_pivot = pivots[index + 1]
-
-                if index % 2 == 0:
-                    child_1 += list(pair[0][pivot:next_pivot])
-                    child_2 += list(pair[1][pivot:next_pivot])
-                else:
-                    child_1 += list(pair[1][pivot:next_pivot])
-                    child_2 += list(pair[0][pivot:next_pivot])
-
-            population.append(np.array(child_1))
-            population.append(np.array(child_2))
-
-        return np.array(population)
-
-    def crossover(self, pairs: np.array, points: set = (0, 0.5, 1)):
-        """
-        Does a crossover at the given points between parents to get 2 children from each pair.
-
-        Parameters
-        ----------
-        pairs: numpy.array
-            Array of pairs of the shape (m, 2, d)
-        points: set
-            The set of relative points in range(0, 1), by default splits by half
-
-        Returns
-        -------
-        :return: numpy.array
-            New generation
-        """
-
-        pivots = self.__pivots(points)
-        return self.__crossover(pairs, pivots)
-
-    def uniform_crossover(self, pairs: np.array):
-        """
-        Does a crossover at the given points between parents to get 2 children from each pair.
-
-        Parameters
-        ----------
-        pairs: numpy.array
-            Array of pairs of the shape (m, 2, d)
-
-        Returns
-        -------
-        :return: numpy.array
-            New generation
-        """
-
-        pivots = list(range(self.d))
-        return self.__crossover(pairs, pivots)
-
-    def breed(self, population: np.array, n_breed: int, n_remain: int, crossover_points: set = (0, 0.5, 1)):
-        """
-        Generates a new population by replacing the worst individuals of an old generation
-        with the best individuals of the new generation.
-
-        Parameters
-        ----------
-        population: numpy.array
-            Initial population
-        n_breed: int
-            Number of elite to select and breed
-        n_remain: int
-            Number of elite to remain, not to replace with the new generation
-        crossover_points: set
-            The set of relative crossover points in range(0, 1), by default splits by half
-
-        Returns
-        -------
-        :return: numpy.array
-            New generation
-        """
-        elite = self.select_best(population, n_breed)
-        pairs = self.make_pairs(elite)
-        new_generation = self.crossover(pairs, crossover_points)
-
-        new_population = list(self.select_best(population, n_remain)) + \
-                         list(self.select_best(new_generation, len(population) - n_remain))
-
-        return np.array(new_population)
-
-    def mutate(self, population: np.array, individuals_rate: float = 0.5, genes_rate: float = 0.1, _range: float = 1.):
-        """
-        Applies some random changes to the population. Can be applied either to the whole
-        population, or to the newly created generation.
-
-        Parameters
-        ----------
-        population: numpy.array
-            Initial population to mutate
-        individuals_rate: float
-            Share of individuals to mutate
-        genes_rate: float
-            Share of genes to change
-        _range: float
-            Mutation range
-
-        Returns
-        -------
-        :return: numpy.array: mutated population
-        """
-        for individual in range(len(population)):
-            if individuals_rate > random.random():
-                for gene in range(self.d):
-                    if genes_rate > random.random():
-                        population[individual][gene] += (random.random() - 0.5) * _range
-        return population
-
-    def evolve(self, population_size: int = 1000, n_breed: int = 200, n_remain: int = 200,
-               crossover_points: set = (0, 0.5, 1), individuals_mutation_rate: float = 0.5,
-               genes_mutation_rate: float = 0.1, mutation_range: float = 1.,
-               max_iterations: int = 10000, _terminate: int = 1000):
-        """
-        Finds the global minima of the function by simulating an evolving population.
-
-        Parameters
-        ----------
-        population_size: int
-            Number of individuals in the population
-        n_breed: int
-            Number of elite to select and breed
-        n_remain: int
-            Number of elite to remain, not to replace with the new generation
-        crossover_points: set
-            The set of relative crossover points in range(0, 1), by default splits by half
-        individuals_mutation_rate: float
-            Share of individuals to mutate
-        genes_mutation_rate: float
-            Share of genes to change
-        mutation_range: float
-            Mutation range
-        max_iterations: int
-            Maximal number of iterations
-        _terminate: int
-            Maximal number of iterations when the best individual doesn't change
-
-        Returns
-        -------
-        :return: numpy.array
-            x_min = (x_1, ..., x_d) where f(x_min) = min f(x)
-        """
-
-        population = self.generate_population(population_size, self.range)
-
-        best_i = np.argmin(self.eval(population))
-        to_terminate = _terminate
-        for _ in range(max_iterations):
-            population = self.breed(population, n_breed, n_remain, crossover_points)
-            population = self.mutate(population, individuals_mutation_rate, genes_mutation_rate, mutation_range)
-
-            if np.argmin(population) < np.argmin(self.eval(population)):
-                best_i = np.argmin(self.eval(population))
-                to_terminate = _terminate
+        for _ in range(self.max_iter):
+            # Evaluate population
+            fitness = self.eval(pop)
+            is_better = fitness > best_fitness if maximize else fitness < best_fitness
+            if np.any(is_better):
+                improvement_counter = 0
+                best_fitness = fitness[is_better][0]
+                best_solution = pop[is_better][0]
             else:
-                to_terminate -= 1
+                improvement_counter += 1
 
-            if to_terminate == 0:
+            # Check stopping criteria
+            if improvement_counter >= self.patience or best_fitness == self.f.__globals__['inf']:
                 break
 
-        return population[best_i]
+            # Select parents for mating
+            parents_idx = self.select(pop, fitness)[:n_parents]
+
+            # Apply crossover and mutation to create new offspring
+            crossovers_idx = np.random.choice(parents_idx, size=n_crossovers, replace=True)
+            offspring = np.empty((self.population_size, self.d))
+            offspring[:n_crossovers] = self.crossover(pop[crossovers_idx])
+            offspring[n_crossovers:self.n_elites] = pop[parents_idx[:self.n_elites]]
+            mutations_idx = np.random.choice(range(self.population_size), size=n_mutations, replace=False)
+            offspring[mutations_idx] = self.mutate(offspring[mutations_idx])
+
+            # Select elite solutions to keep
+            elites_idx = self.elitism(pop, fitness, self.n_elites)
+            offspring[:self.n_elites] = pop[elites_idx]
+
+            # Replace old population with new offspring
+            pop = offspring
+
+        return best_solution, best_fitness
