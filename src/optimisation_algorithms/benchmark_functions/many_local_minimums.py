@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def ackley(x: np.ndarray) -> float:
+def ackley(x: np.ndarray, a: int = 20, b: float = 0.2, c: float = 2 * np.pi) -> float:
     """
     The Ackley Function.
     Typically, evaluated on the input domain [-32.768, 32.768]^d.
@@ -17,10 +17,10 @@ def ackley(x: np.ndarray) -> float:
     -------
     - The value of the Ackley Function at point x
     """
-    d = len(x)
-    term1 = -0.2 * np.sqrt(np.sum(np.power(x, 2)) / d)
-    term2 = np.sum(np.cos(2 * np.pi * x)) / d
-    return -20 * np.exp(term1) - np.exp(term2) + 20 + np.exp(1)
+    d = x.shape[0]
+    term1 = -b * np.sqrt(np.sum(np.power(x, 2)) / d)
+    term2 = np.sum(np.cos(c * x)) / d
+    return -a * np.exp(term1) - np.exp(term2) + a + np.exp(1)
 
 
 def bukin(x: np.ndarray) -> float:
@@ -108,7 +108,7 @@ def eggholder(x: np.ndarray) -> float:
     x1, x2 = x
     term1 = -(x2 + 47) * np.sin(np.sqrt(np.abs(x2 + x1 / 2 + 47)))
     term2 = -x1 * np.sin(np.sqrt(np.abs(x1 - (x2 + 47))))
-    return term1 + term2 - 959.6407
+    return term1 + term2
 
 
 def gramacy_lee(x: float) -> float:
@@ -148,7 +148,7 @@ def griewank(x: np.ndarray) -> float:
     -------
     - The value of the Griewank function at point x
     """
-    d = len(x)
+    d = x.shape[0]
     term1 = np.sum(np.power(x, 2)) / 4000
     term2 = np.prod(np.cos(x / np.sqrt(np.arange(1, d + 1))))
     return 1 + term1 - term2
@@ -172,7 +172,7 @@ def holder_table(x: np.ndarray) -> float:
     """
     x1, x2 = x
     term1 = -np.abs(np.sin(x1) * np.cos(x2) * np.exp(np.abs(1 - np.sqrt(x1 ** 2 + x2 ** 2) / np.pi)))
-    return term1 - 19.2085
+    return term1
 
 
 def langermann(x: np.ndarray, A: np.ndarray = None, c: np.ndarray = None, W: np.ndarray = None) -> float:
@@ -332,7 +332,8 @@ def schwefel(x: np.ndarray) -> float:
     --------
     - The value of the Schwefel Function at point x
     """
-    return - np.sum(x * np.sin(np.sqrt(np.abs(x))))
+    d = x.shape[0]
+    return 418.9829 * d - np.sum(x * np.sin(np.sqrt(np.abs(x))))
 
 
 def shubert(x: np.ndarray) -> np.ndarray:

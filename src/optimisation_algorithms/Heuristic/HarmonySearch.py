@@ -45,7 +45,7 @@ class HarmonySearch:
         Finds the optimal solution for the given objective function.
     """
     def __init__(self, f: callable, d: int, hm_size: int = 30, hmcr: float = 0.8, par: float = 0.4,
-                 bandwidth: float = 1, top_n: int = 1, tol: float = 1e-8, patience: int = 10,
+                 bandwidth: float = 1, top_n: int = 1, tol: float = 1e-8, patience: int = 10**3,
                  max_iter: int = 10 ** 5, rand_min: float = 0, rand_max: float = 1):
         self.f = f
         self.d = d
@@ -74,7 +74,7 @@ class HarmonySearch:
         - numpy.ndarray:
              An array representing the results of evaluating each solution in the harmony memory.
         """
-        return np.vectorize(self.f)(*hm.T)
+        return np.apply_along_axis(self.f, 1, hm)
 
     def improvise(self, hm: np.array) -> np.ndarray:
         """

@@ -1,9 +1,9 @@
 import numpy as np
 
 
-def bohachevsky(x: np.ndarray) -> float:
+def bohachevsky_n1(x: np.ndarray) -> float:
     """
-    The Bohachevsky function.
+    The Bohachevsky function N. 1.
     Typically, evaluated on the input domain [-100, 100] x [-100, 100].
 
     Dimensions: 2
@@ -15,10 +15,50 @@ def bohachevsky(x: np.ndarray) -> float:
 
     Returns:
     -------
-    - The value of the Bohachevsky function at point x
+    - The value of the first Bohachevsky function at point x
     """
     x1, x2 = x
     return x1 ** 2 + 2 * x2 ** 2 - 0.3 * np.cos(3 * np.pi * x1) - 0.4 * np.cos(4 * np.pi * x2) + 0.7
+
+
+def bohachevsky_n2(x: np.ndarray) -> float:
+    """
+    The Bohachevsky function N. 2.
+    Typically, evaluated on the input domain [-100, 100] x [-100, 100].
+
+    Dimensions: 2
+    Global optimum: f(0, 0) = 0
+
+    Arguments:
+    ---------
+    - x: a NumPy array of shape (2,) representing the point at which to evaluate the function
+
+    Returns:
+    -------
+    - The value of the second Bohachevsky function at point x
+    """
+    x1, x2 = x
+    return x1 ** 2 + 2 * x2 ** 2 - 0.3 * np.cos(3 * np.pi * x1) * np.cos(4 * np.pi * x2) + 0.3
+
+
+def bohachevsky_n3(x: np.ndarray) -> float:
+    """
+    The Bohachevsky function N. 3.
+    Typically, evaluated on the input domain [-100, 100] x [-100, 100].
+
+    Dimensions: 2
+    Global optimum: f(0, 0) = 0
+
+    Arguments:
+    ---------
+    - x: a NumPy array of shape (2,) representing the point at which to evaluate the function
+
+    Returns:
+    -------
+    - The value of the second Bohachevsky function at point x
+    """
+    x1, x2 = x
+    return x1 ** 2 + 2 * x2 ** 2 - 0.3 * np.cos(3 * np.pi * x1 + 4 * np.pi * x2) + 0.3
 
 
 def perm0(x: np.ndarray, beta: float) -> np.ndarray:
