@@ -34,10 +34,21 @@ class PopulationalOptimization(ABC):
         """
         return np.random.uniform(self.rand_min, self.rand_max, (self.population_size, self.d))
 
+    @staticmethod
+    def check_improved(population, fitness, improvement_counter, best_fitness, best_solution, maximize):
+        is_better = fitness > best_fitness if maximize else fitness < best_fitness
+        if np.any(is_better):
+            improvement_counter = 0
+            best_fitness = fitness[is_better][0]
+            best_solution = population[is_better][0]
+        else:
+            improvement_counter += 1
+        return improvement_counter, best_fitness, best_solution
+
     @abstractmethod
     def fit(self, maximize: bool = False) -> Tuple[np.ndarray, float]:
         """
-        Finds the minimum or maximum of a function f.
+        Finds the optimal solution for the given objective function.
 
         Parameters:
         ----------

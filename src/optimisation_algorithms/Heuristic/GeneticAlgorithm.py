@@ -146,7 +146,7 @@ class GeneticAlgorithm(PopulationalOptimization):
 
     def fit(self, maximize=False) -> Tuple[np.ndarray, float]:
         # Generate initial population
-        pop = self.generate_population()
+        population = self.generate_population()
 
         # Initialize variables
         n_parents = int(np.ceil((self.population_size - self.n_elites) / 2))
@@ -157,36 +157,28 @@ class GeneticAlgorithm(PopulationalOptimization):
         improvement_counter = 0
 
         for _ in range(self.max_iter):
-            # Evaluate population
-            fitness = self.eval(pop)
-            is_better = fitness > best_fitness if maximize else fitness < best_fitness
-            if np.any(is_better):
-                improvement_counter = 0
-                best_fitness = fitness[is_better][0]
-                best_solution = pop[is_better][0]
-            else:
-                improvement_counter += 1
-
-            # Check stopping criteria
+            fitness = self.eval(population)
+            improvement_counter, best_fitness, best_solution = \
+                self.check_improved(population, fitness, improvement_counter, best_fitness, best_solution, maximize)
             if improvement_counter >= self.patience or best_fitness == self.f.__globals__['inf']:
                 break
 
             # Select parents for mating
-            parents_idx = self.select(pop, fitness)[:n_parents]
+            parents_idx = self.select(population, fitness)[:n_parents]
 
             # Apply crossover and mutation to create new offspring
             crossovers_idx = np.random.choice(parents_idx, size=n_crossovers, replace=True)
             offspring = np.empty((self.population_size, self.d))
-            offspring[:n_crossovers] = self.crossover(pop[crossovers_idx])
-            offspring[n_crossovers:self.n_elites] = pop[parents_idx[:self.n_elites]]
+            offspring[:n_crossovers] = self.crossover(population[crossovers_idx])
+            offspring[n_crossovers:self.n_elites] = population[parents_idx[:self.n_elites]]
             mutations_idx = np.random.choice(range(self.population_size), size=n_mutations, replace=False)
             offspring[mutations_idx] = self.mutate(offspring[mutations_idx])
 
             # Select elite solutions to keep
-            elites_idx = self.elitism(pop, fitness, self.n_elites)
-            offspring[:self.n_elites] = pop[elites_idx]
+            elites_idx = self.elitism(population, fitness, self.n_elites)
+            offspring[:self.n_elites] = population[elites_idx]
 
             # Replace old population with new offspring
-            pop = offspring
+            population = offspring
 
         return best_solution, best_fitness
