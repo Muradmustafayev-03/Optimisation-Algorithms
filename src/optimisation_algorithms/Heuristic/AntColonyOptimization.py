@@ -23,7 +23,7 @@ class AntColonyOptimization(PopulationalOptimization):
         The rate at which pheromone evaporates over time.
     - tolerance : float (default=1e-8)
         The convergence threshold.
-    - patience : int (default=10)
+    - patience : int (default=10**3)
         The number of iterations to wait for improvement before stopping the optimization.
     - max_iter : int (default=10 ** 5)
         The maximum number of iterations to run.
@@ -46,7 +46,7 @@ class AntColonyOptimization(PopulationalOptimization):
     """
 
     def __init__(self, f: callable, d: int, pop_size: int = 50, alpha: float = 1, beta: float = 2,
-                 evaporation_rate: float = 0.5, tolerance: float = 1e-8, patience: int = 10,
+                 evaporation_rate: float = 0.5, tolerance: float = 1e-8, patience: int = 10**3,
                  max_iter: int = 10 ** 5, rand_min: float = 0, rand_max: float = 1):
         self.f = f
         self.d = d

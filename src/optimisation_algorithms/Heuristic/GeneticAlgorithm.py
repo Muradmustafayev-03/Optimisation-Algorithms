@@ -64,7 +64,7 @@ class GeneticAlgorithm(PopulationalOptimization):
         self.rand_min = rand_min
         self.rand_max = rand_max
 
-    def select(self, pop: np.ndarray, fitness: np.ndarray) -> np.ndarray:
+    def select(self, fitness: np.ndarray) -> np.ndarray:
         """
         Selects individuals for mating based on their fitness.
 
@@ -81,7 +81,7 @@ class GeneticAlgorithm(PopulationalOptimization):
             A numpy array representing the selected individuals for mating.
         """
         idx = np.random.choice(self.population_size, self.population_size, p=fitness/fitness.sum())
-        return pop[idx]
+        return idx
 
     def crossover(self, parents: np.ndarray) -> np.ndarray:
         """
@@ -160,11 +160,11 @@ class GeneticAlgorithm(PopulationalOptimization):
             fitness = self.eval(population)
             improvement_counter, best_fitness, best_solution = \
                 self.check_improved(population, fitness, improvement_counter, best_fitness, best_solution, maximize)
-            if improvement_counter >= self.patience or best_fitness == self.f.__globals__['inf']:
+            if improvement_counter >= self.patience:
                 break
 
             # Select parents for mating
-            parents_idx = self.select(population, fitness)[:n_parents]
+            parents_idx = self.select(fitness)[:n_parents]
 
             # Apply crossover and mutation to create new offspring
             crossovers_idx = np.random.choice(parents_idx, size=n_crossovers, replace=True)
@@ -175,8 +175,8 @@ class GeneticAlgorithm(PopulationalOptimization):
             offspring[mutations_idx] = self.mutate(offspring[mutations_idx])
 
             # Select elite solutions to keep
-            elites_idx = self.elitism(population, fitness, self.n_elites)
-            offspring[:self.n_elites] = population[elites_idx]
+            elites = self.elitism(population, fitness, self.n_elites)
+            offspring[:self.n_elites] = elites
 
             # Replace old population with new offspring
             population = offspring
