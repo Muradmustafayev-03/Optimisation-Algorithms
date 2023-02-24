@@ -32,7 +32,7 @@ class PopulationalOptimization(ABC):
         """
         Generates an initial population
         """
-        return np.random.uniform(self.rand_min, self.rand_max, (self.population_size, self.d))
+        return np.random.uniform(self.rand_min, self.rand_max, size=(self.population_size, self.d))
 
     @staticmethod
     def check_improved(population, fitness, improvement_counter, best_fitness, best_solution, maximize):
