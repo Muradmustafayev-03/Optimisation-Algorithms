@@ -126,26 +126,19 @@ class HarmonySearch(PopulationalOptimization):
 
     def fit(self, maximize: bool = False) -> Tuple[np.ndarray, float]:
         hm = self.generate_population()
-        best_hm_idx = np.argmin(self.eval(hm)) if not maximize else np.argmax(self.eval(hm))
-        best_hm = hm[best_hm_idx]
-        best_val = self.f(best_hm)
-        current_patience = self.patience
 
-        for i in range(self.max_iter):
+        best_fitness = -np.inf if maximize else np.inf
+        best_solution = None
+        improvement_counter = 0
+
+        for _ in range(self.max_iter):
+            fitness = self.eval(hm)
+            improvement_counter, best_fitness, best_solution = \
+                self.check_improved(hm, fitness, improvement_counter, best_fitness, best_solution, maximize)
+            if improvement_counter >= self.patience:
+                break
+
             new_hm = self.improvise(hm)
             hm = self.replace_worst_with_best(hm, new_hm, maximize)
 
-            new_best_hm_idx = np.argmax(self.eval(hm)) if maximize else np.argmin(self.eval(hm))
-            new_best_hm = hm[new_best_hm_idx]
-            new_best_val = self.f(new_best_hm)
-
-            if abs(new_best_val - best_val) < self.tol:
-                current_patience -= 1
-                if current_patience == 0:
-                    break
-            else:
-                current_patience = self.patience
-                best_hm = new_best_hm
-                best_val = new_best_val
-
-        return best_hm, best_val
+        return best_solution, best_fitness
