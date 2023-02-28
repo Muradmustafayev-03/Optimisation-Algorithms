@@ -152,6 +152,7 @@ class GeneticAlgorithm(PopulationalOptimization):
         n_parents = int(np.ceil((self.population_size - self.n_elites) / 2))
         n_mutations = int(np.ceil(self.mutation_rate * self.population_size))
         n_crossovers = int(np.ceil(self.crossover_rate * self.population_size))
+
         best_fitness = -np.inf if maximize else np.inf
         best_solution = None
         improvement_counter = 0

@@ -1,132 +1,68 @@
-from typing import Tuple
 import numpy as np
-from PopulationalAbstract import PopulationalOptimization
 
 
-class AntColonyOptimization(PopulationalOptimization):
-    """
-    Ant Colony Optimization optimization algorithm.
-
-    Parameters:
-    ----------
-    - f : callable
-        The objective function to be optimized.
-    - d : int
-        The dimensionality of the decision variables.
-    - pop_size : int (default=50)
-        The size of the ant colony.
-    - alpha : float (default=1)
-        The relative importance of the pheromone trail in path selection.
-    - beta : float (default=2)
-        The relative importance of the distance in path selection.
-    - evaporation_rate : float (default=0.5)
-        The rate at which pheromone evaporates over time.
-    - tolerance : float (default=1e-8)
-        The convergence threshold.
-    - patience : int (default=10**3)
-        The number of iterations to wait for improvement before stopping the optimization.
-    - max_iter : int (default=10 ** 5)
-        The maximum number of iterations to run.
-    - rand_min : float (default=0)
-        The minimum value for random initialization of decision variables.
-    - rand_max : float (default=1)
-        The maximum value for random initialization of decision variables.
-
-    Methods:
-    --------
-    - eval(pop: np.ndarray) -> np.ndarray:
-        Evaluates the objective function at each point in the population.
-    - generate_population()
-        Generates an initial ant colony.
-    - select_path(current: int, unvisited: List[int], pheromone: np.ndarray, distances: np.ndarray,
-                  alpha: float, beta: float) -> int:
-        Selects the next node for an ant to visit using a probabilistic model.
-    - fit(maximize: bool = False) -> Tuple[np.ndarray, float]:
-        Finds the optimal solution for the given objective function.
-    """
-
-    def __init__(self, f: callable, d: int, pop_size: int = 50, alpha: float = 1, beta: float = 2,
-                 evaporation_rate: float = 0.5, tolerance: float = 1e-8, patience: int = 10**3,
-                 max_iter: int = 10 ** 5, rand_min: float = 0, rand_max: float = 1):
-        self.f = f
-        self.d = d
-        self.population_size = pop_size
+class AntColony:
+    def __init__(self, distances, n_ants, n_best, n_iterations, decay, alpha=1, beta=1):
+        self.distances = distances
+        self.pheromone = np.ones(self.distances.shape) / len(distances)
+        self.all_idx = range(len(distances))
+        self.n_ants = n_ants
+        self.n_best = n_best
+        self.n_iterations = n_iterations
+        self.decay = decay
         self.alpha = alpha
         self.beta = beta
-        self.evaporation_rate = evaporation_rate
-        self.tolerance = tolerance
-        self.patience = patience
-        self.max_iter = max_iter
-        self.rand_min = rand_min
-        self.rand_max = rand_max
 
-    @staticmethod
-    def select_path(pheromone_matrix: np.ndarray, distance_matrix: np.ndarray, alpha: float, beta: float) -> np.ndarray:
-        """
-        Selects a path for each ant based on pheromone trail strength and distance.
+    def run(self):
+        all_time_shortest_path = ("placeholder", np.inf)
+        for i in range(self.n_iterations):
+            all_paths = self.gen_all_paths()
+            self.spread_pheromone(all_paths, self.n_best)
+            shortest_path = min(all_paths, key=lambda x: x[1])
+            print(shortest_path)
+            if shortest_path[1] < all_time_shortest_path[1]:
+                all_time_shortest_path = shortest_path
+            self.pheromone = self.pheromone * self.decay
+        return all_time_shortest_path
 
-        Parameters:
-        ----------
-        - pheromone_matrix : np.ndarray of shape (n, n)
-            The pheromone matrix.
-        - distance_matrix : np.ndarray of shape (n, n)
-            The distance matrix.
-        - alpha : float
-            The pheromone influence parameter.
-        - beta : float
-            The distance influence parameter.
+    def spread_pheromone(self, all_paths, n_best):
+        sorted_paths = sorted(all_paths, key=lambda x: x[1])
+        for path, dist in sorted_paths[:n_best]:
+            for move in path:
+                self.pheromone[move] += 1.0 / self.distances[move]
 
-        Returns:
-        -------
-        - paths : np.ndarray of shape (n_ants, n)
-            The paths chosen by each ant.
-        """
-        n_ants = pheromone_matrix.shape[0]
-        n = pheromone_matrix.shape[1]
-        paths = np.zeros((n_ants, n), dtype=int)
-        visited = np.zeros(n, dtype=bool)
-        for ant in range(n_ants):
-            current_node = np.random.randint(n)
-            visited[current_node] = True
-            paths[ant, 0] = current_node
-            for i in range(1, n):
-                probs = ((pheromone_matrix[current_node] ** alpha) *
-                         ((1.0 / distance_matrix[current_node]) ** beta))
-                probs *= 1.0 - visited
-                probs /= np.sum(probs)
-                current_node = np.random.choice(np.arange(n), p=probs)
-                visited[current_node] = True
-                paths[ant, i] = current_node
-            visited[:] = False
-        return paths
+    def gen_path_dist(self, path):
+        total_dist = 0
+        for ele in path:
+            total_dist += self.distances[ele]
+        return total_dist
 
-    def fit(self, maximize=False):
-        population = self.generate_population()
+    def gen_all_paths(self):
+        all_paths = []
+        for i in range(self.n_ants):
+            path = self.gen_path(0)
+            all_paths.append((path, self.gen_path_dist(path)))
+        return all_paths
 
-        best_fitness = -np.inf if maximize else np.inf
-        best_solution = None
-        improvement_counter = 0
+    def gen_path(self, start):
+        path = []
+        visited = set()
+        visited.add(start)
+        prev = start
+        for i in range(len(self.distances) - 1):
+            move = self.pick_move(self.pheromone[prev], self.distances[prev], visited)
+            path.append((prev, move))
+            prev = move
+            visited.add(move)
+        path.append((prev, start))
+        return path
 
-        for iteration in range(self.max_iter):
-            fitness = self.eval(population)
-            improvement_counter, best_fitness, best_solution = \
-                self.check_improved(population, fitness, improvement_counter, best_fitness, best_solution, maximize)
-            if improvement_counter >= self.patience:
-                break
+    def pick_move(self, pheromone, dist, visited):
+        pheromone = np.copy(pheromone)
+        pheromone[list(visited)] = 0
 
-            pheromone = np.zeros((self.d, self.d))
-            distances = np.apply_along_axis(lambda x: np.linalg.norm(x - population, axis=1), 1, population)
-            for ant in range(self.population_size):
-                paths = self.select_path(pheromone, distances, self.alpha, self.beta)
-                path_distances = np.apply_along_axis(lambda x: np.sum(distances[range(self.d), x[:-1], x[1:]]), 1,
-                                                     paths)
-                path_fitness = self.eval(population[ant][paths])
-                is_better = path_fitness > best_fitness if maximize else path_fitness < best_fitness
-                if np.any(is_better):
-                    best_fitness = path_fitness[is_better][0]
-                    best_solution = population[ant][paths[is_better][0]]
-                for i in range(self.d):
-                    for j in range(self.d):
-                        pheromone[i, j] *= self.evaporation_rate
-                        pheromone[i, j] += np.sum(1.0 / path_distances * path_fitness * (paths[:, i] == j))
-        return best_solution, best_fitness
+        row = pheromone ** self.alpha * ((1.0 / dist) ** self.beta)
+
+        norm_row = row / row.sum()
+        move = np.random.choice(self.all_idx, 1, p=norm_row)[0]
+        return move
