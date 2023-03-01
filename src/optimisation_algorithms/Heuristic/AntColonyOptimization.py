@@ -13,13 +13,12 @@ class AntColony:
         self.alpha = alpha
         self.beta = beta
 
-    def run(self):
+    def fit(self):
         all_time_shortest_path = ("placeholder", np.inf)
         for i in range(self.n_iterations):
             all_paths = self.gen_all_paths()
             self.spread_pheromone(all_paths, self.n_best)
             shortest_path = min(all_paths, key=lambda x: x[1])
-            print(shortest_path)
             if shortest_path[1] < all_time_shortest_path[1]:
                 all_time_shortest_path = shortest_path
             self.pheromone = self.pheromone * self.decay

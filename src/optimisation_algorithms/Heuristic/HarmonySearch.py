@@ -1,5 +1,4 @@
 from PopulationalAbstract import PopulationalOptimization
-from typing import Tuple
 import numpy as np
 
 
@@ -22,13 +21,13 @@ class HarmonySearch(PopulationalOptimization):
     - bandwidth : float (default=1)
         The bandwidth for pitch adjustment.
     - top_n : int (default=1)
-        The number of best harmony solutions to consider for replacement.
+        The number of the best harmony solutions to consider for replacement.
     - tol : float (default=1e-8)
         The convergence threshold.
     - patience : int (default=10)
         The number of iterations to wait for improvement before stopping the optimization.
     - max_iter : int (default=10 ** 5)
-        The maximum number of iterations to run.
+        The maximum number of iterations to fit.
     - rand_min : float (default=0)
         The minimum value for random initialization of decision variables.
     - rand_max : float (default=1)
@@ -48,20 +47,13 @@ class HarmonySearch(PopulationalOptimization):
         Finds the optimal solution for the given objective function.
     """
     def __init__(self, f: callable, d: int, hm_size: int = 30, hmcr: float = 0.8, par: float = 0.4,
-                 bandwidth: float = 1, top_n: int = 1, tol: float = 1e-8, patience: int = 10**3,
+                 bandwidth: float = 1, top_n: int = 1, tol: float = 1e-8, patience: int = 10 ** 3,
                  max_iter: int = 10 ** 5, rand_min: float = 0, rand_max: float = 1):
-        self.f = f
-        self.d = d
-        self.population_size = hm_size
+        super().__init__(f, d, hm_size, tol, patience, max_iter, rand_min, rand_max)
         self.hmcr = hmcr
         self.par = par
         self.bw = bandwidth
         self.top_n = top_n
-        self.tol = tol
-        self.patience = patience
-        self.max_iter = max_iter
-        self.rand_min = rand_min
-        self.rand_max = rand_max
 
     def improvise(self, hm: np.array) -> np.ndarray:
         """
@@ -124,21 +116,6 @@ class HarmonySearch(PopulationalOptimization):
 
         return old_hm
 
-    def fit(self, maximize: bool = False) -> Tuple[np.ndarray, float]:
-        hm = self.generate_population()
-
-        best_fitness = -np.inf if maximize else np.inf
-        best_solution = None
-        improvement_counter = 0
-
-        for _ in range(self.max_iter):
-            fitness = self.eval(hm)
-            improvement_counter, best_fitness, best_solution = \
-                self.check_improved(hm, fitness, improvement_counter, best_fitness, best_solution, maximize)
-            if improvement_counter >= self.patience:
-                break
-
-            new_hm = self.improvise(hm)
-            hm = self.replace_worst_with_best(hm, new_hm, maximize)
-
-        return best_solution, best_fitness
+    def update_population(self, **kwargs):
+        new_population = self.improvise(self.population)
+        self.population = self.replace_worst_with_best(self.population, new_population, kwargs['maximize'])
