@@ -1,67 +1,90 @@
 import numpy as np
+from PopulationalAbstract import PopulationalOptimization
 
 
-class AntColony:
-    def __init__(self, distances, n_ants, n_best, n_iterations, decay, alpha=1, beta=1):
-        self.distances = distances
-        self.pheromone = np.ones(self.distances.shape) / len(distances)
-        self.all_idx = range(len(distances))
-        self.n_ants = n_ants
-        self.n_best = n_best
-        self.n_iterations = n_iterations
-        self.decay = decay
+class AntColonyOptimization(PopulationalOptimization):
+    def __init__(self, f: callable, d: int, min_val: float, max_val: float, step: float = 1, population_size: int = 20,
+                 tol: float = 1e-8, patience: int = 10**3, max_iter: int = 10 ** 5, alpha: float = 1,
+                 beta: float = 3, evaporation_rate: float = 0.5, pheromone_init: float = 0.01):
+        super().__init__(f, d, population_size, tol, patience, max_iter, min_val, max_val)
         self.alpha = alpha
         self.beta = beta
+        self.evaporation_rate = evaporation_rate
+        self.step = step
+        self.steps_range = int((max_val - min_val) / step)
+        self.pheromones = np.full((self.steps_range, self.steps_range), pheromone_init)
 
-    def fit(self):
-        all_time_shortest_path = ("placeholder", np.inf)
-        for i in range(self.n_iterations):
-            all_paths = self.gen_all_paths()
-            self.spread_pheromone(all_paths, self.n_best)
-            shortest_path = min(all_paths, key=lambda x: x[1])
-            if shortest_path[1] < all_time_shortest_path[1]:
-                all_time_shortest_path = shortest_path
-            self.pheromone = self.pheromone * self.decay
-        return all_time_shortest_path
+    def eval_path(self, path):
+        return sum(self.f([path[j], path[j + 1]]) for j in range(len(path) - 1))
 
-    def spread_pheromone(self, all_paths, n_best):
-        sorted_paths = sorted(all_paths, key=lambda x: x[1])
-        for path, dist in sorted_paths[:n_best]:
-            for move in path:
-                self.pheromone[move] += 1.0 / self.distances[move]
+    def update_population(self, **kwargs):
+        pheromones = np.copy(self.pheromones)
+        pheromones *= (1 - self.evaporation_rate)
 
-    def gen_path_dist(self, path):
-        total_dist = 0
-        for ele in path:
-            total_dist += self.distances[ele]
-        return total_dist
+        for i in range(self.population_size):
+            path = self.generate_path(pheromones)
+            path_fitness = self.eval_path(path)
+            pheromones = self.update_pheromones(pheromones, path, path_fitness)
 
-    def gen_all_paths(self):
-        all_paths = []
-        for i in range(self.n_ants):
-            path = self.gen_path(0)
-            all_paths.append((path, self.gen_path_dist(path)))
-        return all_paths
+        self.pheromones = pheromones
 
-    def gen_path(self, start):
-        path = []
-        visited = set()
-        visited.add(start)
-        prev = start
-        for i in range(len(self.distances) - 1):
-            move = self.pick_move(self.pheromone[prev], self.distances[prev], visited)
-            path.append((prev, move))
-            prev = move
-            visited.add(move)
-        path.append((prev, start))
-        return path
+    def generate_path(self, pheromones):
+        start_node = np.random.randint(self.rand_min, self.rand_max, self.d)[0]
+        path = [start_node]
 
-    def pick_move(self, pheromone, dist, visited):
-        pheromone = np.copy(pheromone)
-        pheromone[list(visited)] = 0
+        for i in range(self.steps_range - 1):
+            current_node = path[-1]
+            allowed_moves = self.get_allowed_moves(current_node)
+            move_probs = self.calculate_move_probs(current_node, allowed_moves, pheromones)
+            next_node = self.make_move(move_probs, allowed_moves)
+            path.append(next_node)
 
-        row = pheromone ** self.alpha * ((1.0 / dist) ** self.beta)
+        return np.array(path)
 
-        norm_row = row / row.sum()
-        move = np.random.choice(self.all_idx, 1, p=norm_row)[0]
-        return move
+    def get_allowed_moves(self, current_node):
+        allowed_moves = np.arange(self.rand_min, self.rand_max, self.step)
+        allowed_moves = np.setdiff1d(allowed_moves, current_node)
+        return allowed_moves
+
+    def calculate_move_probs(self, current_node, allowed_moves, pheromones):
+        move_probs = []
+        denominator = 0
+
+        for move in allowed_moves:
+            pheromone = pheromones[current_node, move]
+            distance = self.f([current_node, move])
+            denominator += (pheromone ** self.alpha) * ((1 / distance) ** self.beta)
+
+        for move in allowed_moves:
+            pheromone = pheromones[current_node, move]
+            distance = self.f([current_node, move])
+            prob = (pheromone ** self.alpha) * ((1 / distance) ** self.beta) / denominator
+            move_probs.append(prob)
+
+        return np.array(move_probs).flatten()
+
+    @staticmethod
+    def make_move(move_probs, allowed_moves):
+        index = np.random.choice(allowed_moves, p=move_probs)
+        return allowed_moves[index]
+
+    @staticmethod
+    def update_pheromones(pheromones, ant_path, ant_fitness):
+        for i in range(len(ant_path) - 1):
+            curr_node = ant_path[i]
+            next_node = ant_path[i + 1]
+            pheromones[curr_node, next_node] += ant_fitness
+            pheromones[next_node, curr_node] = pheromones[curr_node, next_node]
+
+        return pheromones
+
+
+def dis(x):
+    return abs(x[1] - x[0])
+
+
+aco = AntColonyOptimization(dis, 1, -20, 20)
+ant_path = aco.generate_path(aco.pheromones)
+print("path: ", ant_path)
+ant_fitness = sum(dis([ant_path[j], ant_path[j + 1]]) for j in range(len(ant_path) - 1))
+print("fitness = ", ant_fitness)

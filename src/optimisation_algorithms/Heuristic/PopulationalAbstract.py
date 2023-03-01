@@ -83,6 +83,6 @@ class PopulationalOptimization(ABC):
             if improvement_counter >= self.patience:
                 break
 
-            self.update_population(fitness=fitness)
+            self.update_population(fitness=fitness, maximize=maximize)
 
         return best_solution, best_fitness
