@@ -29,22 +29,24 @@ class AntColonyOptimization(PopulationalOptimization):
         self.pheromones = pheromones
 
     def generate_path(self, pheromones):
-        start_node = np.random.randint(self.rand_min, self.rand_max, self.d)[0]
+        allowed_moves = np.arange(self.rand_min, self.rand_max, self.step)
+        start_node = self.make_move(None, allowed_moves)
+        allowed_moves = np.setdiff1d(allowed_moves, start_node)
         path = [start_node]
 
-        for i in range(self.steps_range - 1):
+        while allowed_moves.size > 1:
             current_node = path[-1]
-            allowed_moves = self.get_allowed_moves(current_node)
+            allowed_moves = np.setdiff1d(allowed_moves, current_node)
             move_probs = self.calculate_move_probs(current_node, allowed_moves, pheromones)
             next_node = self.make_move(move_probs, allowed_moves)
             path.append(next_node)
 
         return np.array(path)
 
-    def get_allowed_moves(self, current_node):
-        allowed_moves = np.arange(self.rand_min, self.rand_max, self.step)
-        allowed_moves = np.setdiff1d(allowed_moves, current_node)
-        return allowed_moves
+    # def get_allowed_moves(self, current_node):
+    #     allowed_moves = np.arange(self.rand_min, self.rand_max, self.step)
+    #     allowed_moves = np.setdiff1d(allowed_moves, current_node)
+    #     return allowed_moves
 
     def calculate_move_probs(self, current_node, allowed_moves, pheromones):
         move_probs = []
@@ -52,6 +54,7 @@ class AntColonyOptimization(PopulationalOptimization):
 
         for move in allowed_moves:
             pheromone = pheromones[current_node, move]
+            print(current_node, move)
             distance = self.f([current_node, move])
             denominator += (pheromone ** self.alpha) * ((1 / distance) ** self.beta)
 
@@ -65,8 +68,7 @@ class AntColonyOptimization(PopulationalOptimization):
 
     @staticmethod
     def make_move(move_probs, allowed_moves):
-        index = np.random.choice(allowed_moves, p=move_probs)
-        return allowed_moves[index]
+        return np.random.choice(allowed_moves, p=move_probs)
 
     @staticmethod
     def update_pheromones(pheromones, ant_path, ant_fitness):
@@ -83,7 +85,7 @@ def dis(x):
     return abs(x[1] - x[0])
 
 
-aco = AntColonyOptimization(dis, 1, -20, 20)
+aco = AntColonyOptimization(dis, 2, -20, 20)
 ant_path = aco.generate_path(aco.pheromones)
 print("path: ", ant_path)
 ant_fitness = sum(dis([ant_path[j], ant_path[j + 1]]) for j in range(len(ant_path) - 1))
