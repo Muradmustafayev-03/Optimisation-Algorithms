@@ -13,7 +13,7 @@ To install the package as a library use:
 > *pip install optimisation-algorithms*
 
 Then to import:
-> *import optimisation-algorithms*
+> *import optimisation_algorithms*
 
 ---
 
